@@ -1,0 +1,3 @@
+default:
+  http:
+    http2_enabled: true

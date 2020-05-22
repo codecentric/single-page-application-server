@@ -1,0 +1,12 @@
+{{- define "spa_config" -}}
+var spaConfig = {{ . | toJSON }}
+{{- end -}}
+
+{{- define "write-spa_config" -}}
+{{- $config_dir := env.Getenv "CONFIG_DIR" | test.Required "CONFIG_DIR is not defined" -}}
+{{- $file_content := (tmpl.Exec "spa_config" .spa_config) -}}
+{{- $file_hash := ($file_content | crypto.SHA1) -}}
+{{- $file_path := (filepath.Join $config_dir (print ".out/spa_config." $file_hash ".js")) -}}
+{{- tmpl.Exec "spa_config" .spa_config | file.Write $file_path -}}
+{{- $file_hash -}}
+{{- end -}}

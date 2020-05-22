@@ -1,0 +1,7 @@
+default:
+  spa_config:
+    endpoints:
+      localApi: "/api"
+      httpsApi: "https://example.com/api"
+      httpApi: "http://example.com/api"
+      apiWithPort: "https://example.com:1234/api"

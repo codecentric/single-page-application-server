@@ -1,0 +1,18 @@
+name: 'Check if Docker image needs update'
+description: 'This action checks if all file system layers of the base-image are also included in the target-image'
+inputs:
+  base-image:
+    description: 'base-image of the target-image'
+    required: true
+  target-image:
+    description: 'target-image to check if it is based on the current version of the base-image'
+    required: true
+outputs:
+  needs_update:
+    description: '"true" if the target-image does not contain all file system layers of the base-image, otherwise "false"'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.target-image }}
+    - ${{ inputs.base-image }}

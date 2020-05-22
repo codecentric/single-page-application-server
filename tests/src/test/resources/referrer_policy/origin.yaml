@@ -1,0 +1,3 @@
+default:
+  hardening:
+    referrer_policy: "origin"

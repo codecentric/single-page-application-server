@@ -1,0 +1,14 @@
+name: 'Get latest Version from Docker Hub Repository'
+description: 'Downloads the list of latest tags in a Docker Hub Repository and returns the first version in the format MAJOR.MINOR.PATCH.'
+inputs:
+  repository:
+    required: true
+    description: 'The target Docker Hub Repository (e.g. "nginxinc/nginx-unprivileged")'
+outputs:
+  version:
+    description: 'Latest pushed version in the format MAJOR.MINOR.PATCH'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    DOCKER_HUB_REPOSITORY: ${{ inputs.repository }}

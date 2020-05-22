@@ -1,0 +1,78 @@
+name: Update Docker Images
+on:
+  schedule:
+    # At 12:00 on Tuesday.
+    - cron:  '0 12 * * 2'
+
+jobs:
+  rebase_images:
+    name: Update Images
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        spa_server_major_version: [ "latest", "1" ]
+        # "{0}" will be replaced by the latest pushed nginx version
+        nginx: [ "mainline", "stable", "{0}" ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get latest nginx tag
+        id: latest_nginx_tag
+        uses: ./.github/actions/latest-docker-repository-version
+        with:
+          repository: "nginxinc/nginx-unprivileged"
+      - name: Set target nginx tag
+        id: target_nginx_tag
+        run: |
+          NGINX_VERSION="${{ format(matrix.nginx, steps.latest_nginx_tag.outputs.version) }}-alpine"
+          echo "::set-output name=tag::${NGINX_VERSION}"
+          echo "NGINX_VERSION=${NGINX_VERSION}"
+      - name: Set target image name
+        id: target_image_name
+        run: |
+          IMAGE_TAG="${{ matrix.spa_server_major_version }}-nginx-${{ steps.target_nginx_tag.outputs.tag }}"
+          IMAGE_NAME="${{ secrets.DOCKER_REPOSITORY }}:${IMAGE_TAG}"
+          echo "::set-output name=image_name::${IMAGE_NAME}"
+          echo "IMAGE_NAME=${IMAGE_NAME}"
+          TAGS="${IMAGE_TAG}"
+          if [ "latest" = "${{ matrix.spa_server_major_version }}" ] && [ "stable" = "${{ matrix.nginx }}" ]; then
+            TAGS="${TAGS},latest"
+          fi
+          echo "::set-output name=tags::${TAGS}"
+          echo "TAGS=${TAGS}"
+      - name: Check if update is necessary
+        id: check_if_update_is_necessary
+        uses: ./.github/actions/check-docker-image-needs-update
+        with:
+          base-image: "nginxinc/nginx-unprivileged:${{ steps.target_nginx_tag.outputs.tag }}"
+          target-image: "${{ steps.target_image_name.outputs.image_name }}"
+      - name: Find latest SPA-Server release for major version ${{ matrix.spa_server_major_version }}
+        id: latest_release
+        uses: ./.github/actions/latest-semantic-version
+        with:
+          major-version: ${{ matrix.spa_server_major_version }}
+        if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
+      - name: Fix https://github.com/actions/checkout/issues/164 on tag checkout
+        run: sudo chmod -R ugo+rwX .
+        if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
+      - name: Checkout latest SPA-Server version for major version ${{ matrix.spa_server_major_version }}
+        uses: actions/checkout@v2
+        with:
+          ref: "v${{ steps.latest_release.outputs.version }}"
+        if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
+      - run: "./.github/workflows/install-dependencies.sh"
+        if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+        if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
+      - run: "make test NGINX_TAG=\"${{ steps.target_nginx_tag.outputs.tag }}\""
+        if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
+      - uses: docker/build-push-action@v1
+        if: ${{ steps.check_if_update_is_necessary.outputs.needs_update == 'true' && steps.target_image_name.outputs.tags != '' }}
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ secrets.DOCKER_REPOSITORY }}
+          tags: ${{ steps.target_image_name.outputs.tags }}
+          always_pull: true
+          build_args: NGINX_TAG=${{ steps.target_nginx_tag.outputs.tag }}

@@ -1,0 +1,18 @@
+{{- /* General headers which should be present on all HTTP responses */ -}}
+{{ define "general-security-headers" -}}
+{{ if and .https.enabled .https.hsts_enabled -}}
+add_header Strict-Transport-Security "max-age=31536000" always;
+{{ end -}}
+{{ if .hardening.x_content_type_options -}}
+add_header X-Content-Type-Options "{{ .hardening.x_content_type_options }}" always;
+{{ end -}}
+{{- end -}}
+
+{{- /* Header to harden HTML and JavaScript documents (In case they are used as web workers) */ -}}
+{{- define "web-document-hardening" -}}
+{{- template "general-security-headers" . -}}
+{{- if .hardening.referrer_policy -}}
+add_header Referrer-Policy "{{ .hardening.referrer_policy }}" always;
+{{ end -}}
+{{- template "content-security-policy-header" . -}}
+{{- end -}}

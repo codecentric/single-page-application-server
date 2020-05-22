@@ -1,0 +1,94 @@
+{{- define "https-port" -}}
+  {{- if ne . 443 -}}
+    :{{- . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "server" -}}
+{{- $app_root := env.Getenv "APP_ROOT" | test.Required "APP_ROOT is not defined" -}}
+{{- if and .https.enabled .http.enabled .http.https_redirect -}}
+server {
+    listen {{ .http.port }}{{ if .http.http2_enabled }} http2{{ end }}{{ if .is_default }} default_server{{ end }};
+
+    server_name {{ join .server_names " " }};
+
+    {{ tmpl.Exec "access_log" .access_log }}
+
+{{ tmpl.Exec "server-hardening" . | strings.Indent 4 " " }}
+{{ tmpl.Exec "general-security-headers" . | strings.Indent 4 " " }}
+
+    # Redirect only temporarily in case we want to enable HTTPS only temporarily.
+    # HSTS would prevent calls to the HTTP endpoint anyway in case we want to enforce HTTPS.
+    return 307 https://$host{{ template "https-port" (conv.Default .https.port .http.https_redirect_port) }}$request_uri;
+}
+
+{{ end -}}
+server {
+    {{- if and .http.enabled (not (and .https.enabled .http.https_redirect)) }}
+    listen              {{ .http.port }}{{ if .http.http2_enabled }} http2{{ end }}{{ if .is_default }} default_server{{ end }};
+    {{- end }}
+    {{- if .https.enabled }}
+    listen              {{ .https.port }}{{ if .https.http2_enabled }} http2{{ end }}{{ if .is_default }} default_server{{ end }} ssl;
+    ssl_certificate     {{ .https.ssl_certificate }};
+    ssl_certificate_key {{ .https.ssl_certificate_key }};
+    ssl_protocols       {{ template "owasp-string-protocols" .https.owasp_cipher_string }};
+    ssl_ciphers         {{ template "owasp-string-cipher-suite" .https.owasp_cipher_string }};
+    {{- end }}
+
+    server_name         {{ join .server_names " " }};
+
+    {{ tmpl.Exec "access_log" .access_log }}
+
+{{ tmpl.Exec "server-hardening" . | strings.Indent 4 " " }}
+{{ tmpl.Exec "general-security-headers" . | strings.Indent 4 " " }}
+
+    error_page 500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # Prevent server requests on hashed resources
+    # We ignore html files with hashes as they might got modified
+    location ~* "\.[a-f0-9]{16,}\.(ico|pdf|flv|jpg|jpeg|png|gif|css|swf)$" {
+        root   {{ $app_root }};
+        etag   off;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+{{ tmpl.Exec "general-security-headers" . | strings.Indent 8 " " }}
+    }
+
+    location ~* "\.[a-f0-9]{16,}\.js$" {
+        root   {{ $app_root }};
+        etag   off;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+{{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
+    }
+
+    # Return resource or 404 if resource could not be found
+    location ~* "\.(ico|pdf|flv|jpg|jpeg|png|gif|css|swf)$" {
+        root   {{ $app_root }};
+    }
+
+    # Return resource or 404 if explicitly requested HTML or JavaScript document could not be found
+    location ~* "\.(js|html|htm)$" {
+        root   {{ $app_root }};
+{{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
+    }
+
+    # Return index.html on other requests by default
+    location / {
+        root   {{ $app_root }};
+{{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
+
+        # Return index.html if it exists (does not exist in root as we delete it)
+        index  index.html;
+        try_files $uri /{{- .index -}};
+    }
+
+{{ tmpl.Exec "gzip" . | strings.Indent 4 " " }}
+}
+
+{{ end -}}
+
+{{- define "access_log" -}}
+access_log {{ if .enabled }}/dev/stdout{{ else }}off{{ end }};
+{{- end -}}

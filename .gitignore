@@ -1,0 +1,4 @@
+.idea
+/config/.out
+/config_tests/.tmp
+/tests/target

@@ -1,0 +1,10 @@
+{{- define "server-hardening" -}}
+{{- /* Disable emitting nginx version on error pages and in the "Server" response header field. */ -}}
+server_tokens off;
+
+{{/* Do not allow methods other than GET and HEAD. */ -}}
+if ($request_method !~ ^(GET|HEAD)$ )
+{
+    return 405;
+}
+{{ end -}}

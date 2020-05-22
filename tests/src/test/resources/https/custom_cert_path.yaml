@@ -1,0 +1,5 @@
+default:
+  https:
+    enabled: true
+    ssl_certificate: "/etc/ssl/custom.cert"
+    ssl_certificate_key: "/etc/ssl/custom.key"

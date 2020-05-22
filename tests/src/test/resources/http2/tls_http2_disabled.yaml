@@ -1,0 +1,4 @@
+default:
+  https:
+    enabled: true
+    http2_enabled: false

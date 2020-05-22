@@ -1,0 +1,22 @@
+ {{- "sPa_coNfig.js" | regexp.ReplaceLiteral "(?i)spa(_)?config(\\.[a-f0-9]{8,})?\\.js" (print "spa_config.23jkh23jl34kl.js") -}}
+
+{{- /* Replaces base element and spa_config references and writes the result to a new file, which contains the server config name */ -}}
+{{- define "write-index" -}}
+  {{- $config_dir := env.Getenv "CONFIG_DIR" | test.Required "CONFIG_DIR is not defined" -}}
+  {{- $app_root := env.Getenv "APP_ROOT" | test.Required "APP_ROOT is not defined" -}}
+  {{- $file_content := (filepath.Join $app_root .path) | file.Read -}}
+
+  {{- /* Remove existing base element */ -}}
+  {{- $file_content := $file_content | regexp.ReplaceLiteral "<base[^>]*>" "" -}}
+
+  {{- /* Insert new base element before title element */ -}}
+  {{- $file_content = $file_content | regexp.ReplaceLiteral "<title>" (print "<base href=\"" .base_href "\" /><title>") -}}
+
+  {{- /* Replace occurrences of spa_config.js with spa_config.{hash}.js */ -}}
+  {{- $file_content = $file_content | regexp.ReplaceLiteral "(?i)spa(_)?config(\\.[a-f0-9]{4,})?\\.js" (print "spa_config." .spa_config_hash ".js") -}}
+
+  {{- $file_hash := ($file_content | crypto.SHA1) -}}
+  {{- $new_path := .path | regexp.ReplaceLiteral "\\.htm(l)?$" (print "." $file_hash ".html") -}}
+  {{- $file_content | file.Write (filepath.Join $config_dir ".out" $new_path) -}}
+  {{- $new_path -}}
+{{- end -}}

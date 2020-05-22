@@ -1,0 +1,22 @@
+name: 'Determine image tags to push'
+description: 'Determines target image tags to push, based on the tag to build and the latest available versions of this application'
+inputs:
+  git-ref:
+    required: true
+    description: 'Git reference of this workflow'
+  nginx-tag:
+    required: true
+    description: 'The nginx tag, which should be used as base for the target image'
+  matrix-nginx:
+    required: true
+    description: 'Value of matrix.nginx'
+outputs:
+  tags:
+    description: 'A comma separated list of tags to push'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  env:
+    GIT_REF: "${{ inputs.git-ref }}"
+    NGINX_TAG: "${{ inputs.nginx-tag }}"
+    MATRIX_NGINX: "${{ inputs.matrix-nginx }}"

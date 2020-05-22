@@ -1,0 +1,17 @@
+#!/bin/sh -ex
+
+git fetch --tags
+
+GIT_SEMVER_ARGS=""
+
+if [ "${INCLUDE_PRE_RELEASES}" == "true" ]; then
+  GIT_SEMVER_ARGS="--include-pre-releases"
+fi
+
+echo "::set-output name=global_latest_version::$(git-semver latest ${GIT_SEMVER_ARGS})"
+
+if [ ! -z "${MAJOR_VERSION}" ] && [ "${MAJOR_VERSION}" != "latest" ]; then
+  GIT_SEMVER_ARGS="${GIT_SEMVER_ARGS} --major-version=${MAJOR_VERSION}"
+fi
+
+echo "::set-output name=version::$(git-semver latest ${GIT_SEMVER_ARGS})"

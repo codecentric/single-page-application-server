@@ -1,0 +1,10 @@
+default:
+  spa_config:
+    defaultProperty: "This is not overridden"
+    testProperty: "Default Value"
+secondary_server:
+  server_names:
+    - "secondary-server.com"
+    - "www.secondary-server.com"
+  spa_config:
+    testProperty: "Secondary Server Value"

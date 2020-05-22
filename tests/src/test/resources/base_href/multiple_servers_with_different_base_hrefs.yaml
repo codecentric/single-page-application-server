@@ -1,0 +1,7 @@
+default:
+  base_href: "/default-base-path/"
+secondary_server:
+  server_names:
+    - "secondary-server.com"
+    - "www.secondary-server.com"
+  base_href: "/secondary-server-base-path/"

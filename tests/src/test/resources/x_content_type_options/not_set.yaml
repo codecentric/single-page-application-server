@@ -1,0 +1,3 @@
+default:
+  hardening:
+    x_content_type_options: ""

@@ -1,0 +1,5 @@
+default:
+  http:
+    https_redirect_port: 1234
+  https:
+    enabled: true

@@ -1,0 +1,50 @@
+name: On Tag pushed
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  test:
+    name: Test and Push Images
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # "{0}" will be replaced by the latest pushed nginx version
+        nginx: [ "mainline", "stable", "{0}" ]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - name: Get latest nginx tag
+        id: latest_nginx_tag
+        uses: ./.github/actions/latest-docker-repository-version
+        with:
+          repository: "nginxinc/nginx-unprivileged"
+      - name: Set target nginx tag
+        id: target_nginx_tag
+        run: |
+          NGINX_TAG="${{ format(matrix.nginx, steps.latest_nginx_tag.outputs.version) }}-alpine"
+          echo "::set-output name=tag::${NGINX_TAG}"
+          echo "NGINX_TAG=${NGINX_TAG}"
+      - run: "./.github/workflows/install-dependencies.sh"
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - run: "make test NGINX_TAG=\"${{ steps.target_nginx_tag.outputs.tag }}\""
+      - name: Determine tags to push
+        id: target_tags
+        uses: ./.github/actions/determine-target-image-tags
+        with:
+          git-ref: "${{ github.ref }}"
+          nginx-tag: "${{ steps.target_nginx_tag.outputs.tag }}"
+          matrix-nginx: "${{ matrix.nginx }}"
+      - uses: docker/build-push-action@v1
+        if: ${{ steps.target_tags.outputs.tags != '' }}
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ secrets.DOCKER_REPOSITORY }}
+          tags: ${{ steps.target_tags.outputs.tags }}
+          always_pull: true
+          build_args: NGINX_TAG=${{ steps.target_nginx_tag.outputs.tag }}

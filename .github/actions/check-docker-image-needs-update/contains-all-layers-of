@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+TARGET_IMAGE="$1"
+BASE_IMAGE="$2"
+
+test ! -z "${BASE_IMAGE}" || ( echo "BASE_IMAGE is not specified" && false )
+test ! -z "${TARGET_IMAGE}" || ( echo "TARGET_IMAGE is not specified" && false )
+
+BASE_LAYER_DIGESTS="$(docker inspect ${BASE_IMAGE} | jq -r '.[0].RootFS.Layers | .[]')"
+TARGET_LAYER_DIGESTS="$(docker inspect ${TARGET_IMAGE} | jq -r '.[0].RootFS.Layers | .[]')"
+
+echo "${BASE_LAYER_DIGESTS}" | xargs -I {} sh -c "echo \"${TARGET_LAYER_DIGESTS}\" | grep '{}' > /dev/null || ( echo \"{} is missing\" && false )" \
+  && echo "Success: ${TARGET_IMAGE} contains all layers of ${BASE_IMAGE}" \
+  || ( echo "Fail: At least one base layer is missing in ${TARGET_IMAGE}" && false )

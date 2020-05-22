@@ -1,0 +1,7 @@
+default:
+  spa_config:
+    endpoints:
+      api: "https://example.com/api"
+      api2: "https://example.com:1234/api"
+  hardening:
+    whitelist_spa_config_endpoints_as_connect_sources: false

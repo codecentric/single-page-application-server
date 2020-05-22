@@ -1,0 +1,4 @@
+default:
+  https:
+    enabled: true
+    owasp_cipher_string: B

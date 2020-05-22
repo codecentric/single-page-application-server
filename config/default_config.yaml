@@ -1,0 +1,60 @@
+# Do not edit or replace this file!
+# Instead create a second config file, which overrides these defaults.
+default:
+  # Specifies to which host names this configuration should apply.
+  server_names:
+    # "_" matches any hostname
+    - "_"
+  # The href attribute for the base element in the index.html
+  base_href: "/"
+  # All options in this map will be available inside the SPA via `window.spaConfig`.
+  # To enable this feature, you also need to include spa_config.js in your index.html.
+  # An existing spa_config.js will be overridden at container startup.
+  spa_config:
+    # A map of endpoints to which the SPA will communicate.
+    # These endpoints will automatically be whitelisted in the connect-src CSP directive if .hardening.whitelist_connect_sources is enabled.
+    endpoints: {}
+  access_log:
+    # Enables access logging
+    enabled: false
+  http:
+    enabled: true
+    port: 80
+    # Enables redirect to HTTPS if HTTPS is enabled.
+    https_redirect: true
+    # Use different https_redirect_port if application is behind a NAT.
+    # 0 = use https.port
+    https_redirect_port: 0
+    # HTTP 2 over plain text is disabled by default as Nginx supports HTTP 2 over plain text only via prior knowledge.
+    # Enabling HTTP 2 for plain text connections will prevent clients to connect without prior knowledge.
+    # https://trac.nginx.org/nginx/ticket/816
+    http2_enabled: false
+  https:
+    enabled: false
+    port: 443
+    # Enforces HTTPS permanently
+    hsts_enabled: true
+    ssl_certificate: /etc/ssl/default.crt
+    ssl_certificate_key: /etc/ssl/default.key
+    # Configures supported TLS protocols and cipher suites with recommended value
+    # https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html
+    owasp_cipher_string: A
+    http2_enabled: true
+  hardening:
+    # Disables referrer to prevent information leakage
+    referrer_policy: "no-referrer"
+    # Prevents browsers from guessing the content type
+    x_content_type_options: "nosniff"
+    # Will whitelist the endpoints listed in .spa_config.endpoints automatically in the connect-srv CSP directive if enabled.
+    whitelist_spa_config_endpoints_as_connect_sources: true
+    # Map of CSP directives, which will be added to all HTTP responses for HTML and JavaScript documents
+    content_security_policy:
+      base-uri: "'self'"
+      block-all-mixed-content: true
+      default-src: "'self'"
+      form-action: "'self'"
+      frame-ancestors: "'self'"
+      frame-src: "'self'"
+      object-src: "'none'"
+      script-src: "'self'"
+      style-src: "'self'"

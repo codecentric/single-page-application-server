@@ -1,0 +1,16 @@
+root = true
+
+[*]
+charset = utf-8
+indent_size = 4
+indent_style = space
+
+[Makefile]
+indent_style = tab
+tab_width = 4
+
+[{*.yaml,*.yml}]
+indent_size = 2
+
+[*.sh]
+indent_size = 2

@@ -1,0 +1,28 @@
+{{- /* Returns a single line with all content security directives */ -}}
+{{- define "content-security-policy-directives" -}}
+  {{- range $key, $value := .hardening.content_security_policy -}}
+    {{- if or (eq ($value | conv.ToBool) true) -}}
+      {{ $key }};{{ " " }}
+    {{- else if $value -}}
+      {{ $key }} {{ $value }};{{ " " }}
+    {{- end -}}
+  {{- end -}}
+
+  {{ if and .hardening.whitelist_spa_config_endpoints_as_connect_sources (not (index .hardening.content_security_policy "connect-src")) (ne (len .spa_config.endpoints) 0) -}}
+    connect-src
+    {{- range $key, $value := .spa_config.endpoints -}}
+      {{- if $value | regexp.Match "^http(s)?:\\/\\/" -}}
+        {{- $url := $value | conv.URL -}}
+        {{ " " }}{{ $url.Scheme }}://{{ $url.Host }}
+      {{- end -}}
+    {{- end -}}
+    {{ " 'self'" }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "content-security-policy-header" -}}
+{{ $csp := (tmpl.Exec "content-security-policy-directives" .) -}}
+{{ if $csp -}}
+add_header Content-Security-Policy "{{ $csp }}" always;
+{{ end -}}
+{{- end -}}

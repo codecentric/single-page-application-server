@@ -1,0 +1,4 @@
+default:
+  https:
+    enabled: true
+    port: 1234

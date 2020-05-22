@@ -1,0 +1,4 @@
+{{- define "write-nginx-server-conf" -}}
+{{- $config_dir := env.Getenv "CONFIG_DIR" | test.Required "CONFIG_DIR is not defined" -}}
+{{ tmpl.Exec "server" .config | file.Write (filepath.Join $config_dir (print ".out/conf.d/" .name ".conf")) }}
+{{- end -}}

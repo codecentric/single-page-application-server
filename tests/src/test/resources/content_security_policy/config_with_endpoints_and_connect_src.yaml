@@ -1,0 +1,7 @@
+default:
+  spa_config:
+    endpoints:
+      api: "https://example.com/api"
+  hardening:
+    content_security_policy:
+      connect-src: "'none'"
