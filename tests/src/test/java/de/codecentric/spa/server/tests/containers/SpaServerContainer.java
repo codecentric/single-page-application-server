@@ -13,7 +13,7 @@ import org.testcontainers.shaded.com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-public class SpaServerContainer extends GenericContainer {
+public class SpaServerContainer extends GenericContainer<SpaServerContainer> {
     public static final int DEFAULT_HTTP_PORT = 80;
     public static final int DEFAULT_HTTPS_PORT = 443;
     public static final String DEFAULT_TLS_CERT = "default.crt";

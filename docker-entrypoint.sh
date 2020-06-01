@@ -14,6 +14,6 @@ find "${CONFIG_DIR}/.out" -name "spa_config.*.js" -exec cp {} ${APP_ROOT}/ \;
 find "${CONFIG_DIR}/.out" -name "index.*.html" -exec cp {} ${APP_ROOT}/ \;
 
 # Delete existing index in root directory so that each listening server can serve its custom index as default document
-rm "${APP_ROOT}/index.html"
+rm -f "${APP_ROOT}/index.html"
 
 exec nginx -g "daemon off;"
