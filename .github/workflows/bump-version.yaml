@@ -1,0 +1,24 @@
+name: Bump Version
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Bump Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/git-semver-next
+        id: next_version
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+        with:
+          tag_name: "v${{ steps.next_version.outputs.version }}"
+          release_name: Release ${{ steps.next_version.outputs.version }}
+          draft: false
+          prerelease: false

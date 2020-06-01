@@ -1,0 +1,11 @@
+#!/bin/sh -ex
+
+git fetch --prune --prune-tags --tags
+LATEST_VERSION="$(git semver latest)"
+
+if [ -f $(git rev-parse --git-dir)/shallow ]; then
+  git fetch --shallow-exclude="v${LATEST_VERSION}"
+fi
+
+NEXT_VERSION="$(git semver next)"
+echo "::set-output name=version::${NEXT_VERSION}"

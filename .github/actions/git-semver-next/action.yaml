@@ -1,0 +1,9 @@
+name: 'Calculate next semantic version'
+description: 'Calculates next semantic version based on the git history since the latest version. It is assumed that the commits are using conventional commit messages. (https://www.conventionalcommits.org/en/v1.0.0/)'
+inputs: {}
+outputs:
+  version:
+    description: 'Next semantic version'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
