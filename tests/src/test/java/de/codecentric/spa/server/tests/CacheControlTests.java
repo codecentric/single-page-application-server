@@ -68,7 +68,7 @@ public class CacheControlTests {
                 container.getMappedPort(SpaServerContainer.DEFAULT_HTTP_PORT)));
             assertThat(response.statusCode()).isEqualTo(200);
 
-            assertThat(response.headers().firstValue("cache-control")).isEmpty();
+            assertThat(response.headers().firstValue("cache-control")).hasValue("no-cache, max-age=0");
             assertThat(response.headers().firstValue("etag")).isNotEmpty();
             assertThat(response.headers().firstValue("content-type")).hasValue("text/html");
         }
@@ -110,7 +110,7 @@ public class CacheControlTests {
                 container.getMappedPort(SpaServerContainer.DEFAULT_HTTP_PORT)));
             assertThat(response.statusCode()).isEqualTo(200);
 
-            assertThat(response.headers().firstValue("cache-control")).isEmpty();
+            assertThat(response.headers().firstValue("cache-control")).hasValue("no-cache, max-age=0");
             assertThat(response.headers().firstValue("etag")).isNotEmpty();
             assertThat(response.headers().firstValue("content-type")).hasValue(mimeType);
         }

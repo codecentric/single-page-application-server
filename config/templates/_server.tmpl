@@ -66,17 +66,21 @@ server {
     # Return resource or 404 if resource could not be found
     location ~* "\.(ico|pdf|flv|jpg|jpeg|png|gif|css|swf)$" {
         root   {{ $app_root }};
+        add_header Cache-Control "no-cache, max-age=0";
+{{ tmpl.Exec "general-security-headers" . | strings.Indent 8 " " }}
     }
 
     # Return resource or 404 if explicitly requested HTML or JavaScript document could not be found
     location ~* "\.(js|html|htm)$" {
         root   {{ $app_root }};
+        add_header Cache-Control "no-cache, max-age=0";
 {{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
     }
 
     # Return index.html on other requests by default
     location / {
         root   {{ $app_root }};
+        add_header Cache-Control "no-cache, max-age=0";
 {{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
 
         # Return index.html if it exists (does not exist in root as we delete it)
