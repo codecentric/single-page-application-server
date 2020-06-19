@@ -5,10 +5,10 @@ test ! -z "${CONFIG_DIR}" || ( echo 'CONFIG_DIR is not defined!' && false )
 
 ${CONFIG_DIR}/bootstrap.sh
 
-find "${APP_ROOT}" -maxdepth 1 -iname 'spa_config.js' -exec rm {} \;
-find "${APP_ROOT}" -maxdepth 1 -iname 'spa_config.*.js' -exec rm {} \;
-find "${APP_ROOT}" -maxdepth 1 -iname 'spaConfig.js' -exec rm {} \;
-find "${APP_ROOT}" -maxdepth 1 -iname 'spaConfig.*.js' -exec rm {} \;
+find "${APP_ROOT}" -maxdepth 1 -iname 'spa_config.js' -exec rm -f {} \;
+find "${APP_ROOT}" -maxdepth 1 -iname 'spa_config.*.js' -exec rm -f {} \;
+find "${APP_ROOT}" -maxdepth 1 -iname 'spaConfig.js' -exec rm -f {} \;
+find "${APP_ROOT}" -maxdepth 1 -iname 'spaConfig.*.js' -exec rm -f {} \;
 
 find "${CONFIG_DIR}/.out" -name "spa_config.*.js" -exec cp {} ${APP_ROOT}/ \;
 find "${CONFIG_DIR}/.out" -name "index.*.html" -exec cp {} ${APP_ROOT}/ \;
