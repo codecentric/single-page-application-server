@@ -20,8 +20,8 @@ There will also be tags for specific versions.
 * Configure base element
 * Support environment specific configuration depending on the requested host (port and domain)
 * Hashed resources are cached indefinitely by the browser without revalidating
-  * Resource name needs to look like `my-script.3f8a240b190e37d1.js`
-    * Hash needs to consist of at least 16 characters
+  * Resource name needs to look like `my-script.3f8a240b.js` or `my-script.3f8a240b.chunk.js`
+    * Hash needs to consist of at least 8 characters
   * Applies to resources with the following filename extensions: `js | css | ico | pdf | flv | jpg | jpeg | png | gif | swf`
 * HTTP 2 is enabled by default for HTTPS connections
 
