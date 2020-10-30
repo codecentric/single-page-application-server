@@ -50,7 +50,7 @@ You can mount your custom configuration file at `/config/config.yaml`. Every spe
 
 It is also possible to merge multiple configuration files by specifying the `CONFIG_FILES` environment variable like `CONFIG_FILES="file:///config/config1.yaml|file:///config/config2.yaml"`. The configuration options, specified in the first configuration file in that variable, will have priority over the options in later declared files.
 
-The default configuration file (located in `/config/default_config.yaml` inside the image) contains the default values for every possible configuration option:
+The following configuration shows the default values for every available option:
 ```yaml
 # Do not edit or replace this file!
 # Instead create a second config file, which overrides these defaults.
