@@ -49,14 +49,14 @@ server {
 
     # Prevent server requests on hashed resources
     # We ignore html files with hashes as they might got modified
-    location ~* "\.[a-f0-9]{16,}\.(ico|pdf|flv|jpg|jpeg|png|gif|css|swf)$" {
+    location ~* "\.[a-f0-9]{8,}(\.chunk)?\.(ico|pdf|flv|jpg|jpeg|png|gif|css|swf)$" {
         root   {{ $app_root }};
         etag   off;
         add_header Cache-Control "public, max-age=31536000, immutable";
 {{ tmpl.Exec "general-security-headers" . | strings.Indent 8 " " }}
     }
 
-    location ~* "\.[a-f0-9]{16,}\.js$" {
+    location ~* "\.[a-f0-9]{8,}(\.chunk)?\.js$" {
         root   {{ $app_root }};
         etag   off;
         add_header Cache-Control "public, max-age=31536000, immutable";

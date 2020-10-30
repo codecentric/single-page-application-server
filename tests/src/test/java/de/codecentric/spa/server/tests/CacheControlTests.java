@@ -15,6 +15,7 @@ public class CacheControlTests {
     @Test
     public void hashedJsShouldBeImmutable() throws IOException, InterruptedException {
         shouldBeImmutable("abcdef1234567890.js", "application/javascript");
+        shouldBeImmutable("a6d4d26e.chunk.js", "application/javascript");
     }
 
     @Test
@@ -25,6 +26,7 @@ public class CacheControlTests {
     @Test
     public void hashedCssShouldBeImmutable() throws IOException, InterruptedException {
         shouldBeImmutable("abcdef1234567890.css", "text/css");
+        shouldBeImmutable("a6d4d26e.chunk.css", "text/css");
     }
 
     @Test
