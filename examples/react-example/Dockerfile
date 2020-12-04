@@ -6,6 +6,6 @@ COPY . .
 
 RUN yarn install --frozen-lockfile && yarn run build
 
-FROM psanetra/single-page-application-server:1-nginx-stable-alpine
+FROM codecentric/single-page-application-server:1-nginx-stable-alpine
 
 COPY --from=build /src/build/ /app/

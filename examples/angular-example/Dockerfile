@@ -6,6 +6,6 @@ COPY . .
 
 RUN npm ci && npm run build:prod
 
-FROM psanetra/single-page-application-server:1-nginx-stable-alpine
+FROM codecentric/single-page-application-server:1-nginx-stable-alpine
 
 COPY --from=build /src/dist/angular-example/ /app/
