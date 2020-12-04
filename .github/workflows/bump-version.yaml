@@ -10,10 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/git-semver-next
+      - uses: PSanetra/git-semver-actions/next@v1
         id: next_version
-      - uses: ./.github/actions/latest-semantic-version
+      - uses: PSanetra/git-semver-actions/latest@v1
         id: latest_version
+      - uses: PSanetra/git-semver-actions/markdown-log@v1
+        id: markdown_log
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -22,6 +24,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         with:
           tag_name: "v${{ steps.next_version.outputs.version }}"
+          body: "${{ steps.markdown_log.outputs.changelog }}"
           release_name: Release ${{ steps.next_version.outputs.version }}
           draft: false
           prerelease: false

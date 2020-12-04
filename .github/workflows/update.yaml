@@ -47,7 +47,7 @@ jobs:
           target-image: "${{ steps.target_image_name.outputs.image_name }}"
       - name: Find latest SPA-Server release for major version ${{ matrix.spa_server_major_version }}
         id: latest_release
-        uses: ./.github/actions/latest-semantic-version
+        uses: PSanetra/git-semver-actions/latest@v1
         with:
           major-version: ${{ matrix.spa_server_major_version }}
         if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
