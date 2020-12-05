@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
-test ! -z "${APP_ROOT}" || ( echo 'APP_ROOT is not defined!' && false )
-test ! -z "${CONFIG_DIR}" || ( echo 'CONFIG_DIR is not defined!' && false )
+test -n "${APP_ROOT}" || ( echo 'APP_ROOT is not defined!' && false )
+test -n "${CONFIG_DIR}" || ( echo 'CONFIG_DIR is not defined!' && false )
 
 if [ -z "${CONFIG_FILES}" ] && [ -f "${CONFIG_DIR}/config.yaml" ]; then
   export CONFIG_FILES="file://${CONFIG_DIR}/config.yaml"

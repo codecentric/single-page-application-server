@@ -1,8 +1,8 @@
 #!/bin/sh -e
 
-test ! -z "${GIT_REF}" || ( echo "GIT_REF is not specified" && false )
-test ! -z "${NGINX_TAG}" || ( echo "NGINX_TAG is not specified" && false )
-test ! -z "${MATRIX_NGINX}" || ( echo "MATRIX_NGINX is not specified" && false )
+test -n "${GIT_REF}" || ( echo "GIT_REF is not specified" && false )
+test -n "${NGINX_TAG}" || ( echo "NGINX_TAG is not specified" && false )
+test -n "${MATRIX_NGINX}" || ( echo "MATRIX_NGINX is not specified" && false )
 
 VERSION="$(echo ${GIT_REF} | grep -oE '[0-9]+\.[0-9]+\.[0-9]+.*' | tr -d '\n')"
 echo "VERSION=${VERSION}"
@@ -10,20 +10,20 @@ echo "VERSION=${VERSION}"
 MAJOR_VERSION="$(echo ${GIT_REF} | grep -oE 'v[0-9]+' | grep -oE '[0-9]+' | tr -d '\n')"
 echo "MAJOR_VERSION=${MAJOR_VERSION}"
 
-test ! -z "${VERSION}" || ( echo "VERSION is not specified" && false )
-test ! -z "${MAJOR_VERSION}" || ( echo "MAJOR_VERSION is not specified" && false )
+test -n "${VERSION}" || ( echo "VERSION is not specified" && false )
+test -n "${MAJOR_VERSION}" || ( echo "MAJOR_VERSION is not specified" && false )
 
 git fetch --tags
 
 GLOBAL_LATEST_VERSION="$(git-semver latest --include-pre-releases)"
 echo "GLOBAL_LATEST_VERSION=${GLOBAL_LATEST_VERSION}"
 
-test ! -z "${GLOBAL_LATEST_VERSION}" || ( echo "GLOBAL_LATEST_VERSION is not specified" && false )
+test -n "${GLOBAL_LATEST_VERSION}" || ( echo "GLOBAL_LATEST_VERSION is not specified" && false )
 
 LATEST_VERSION_BY_MAJOR="$(git-semver latest --major-version=${MAJOR_VERSION} --include-pre-releases)"
 echo "LATEST_VERSION_BY_MAJOR=${LATEST_VERSION_BY_MAJOR}"
 
-test ! -z "${LATEST_VERSION_BY_MAJOR}" || ( echo "LATEST_VERSION_BY_MAJOR is not specified" && false )
+test -n "${LATEST_VERSION_BY_MAJOR}" || ( echo "LATEST_VERSION_BY_MAJOR is not specified" && false )
 
 VERSION_IMAGE_TAG="${VERSION}-nginx-${NGINX_TAG}"
 echo "VERSION_IMAGE_TAG=${VERSION_IMAGE_TAG}"
@@ -51,7 +51,7 @@ fi
 
 # Push full version tag only on explicit nginx version tags
 if [ "${MATRIX_NGINX}" = "{0}" ]; then
-  if [ ! -z "${TAGS}" ]; then
+  if [ -n "${TAGS}" ]; then
     TAGS="${TAGS},"
   fi
 

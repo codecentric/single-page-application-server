@@ -3,8 +3,8 @@
 TARGET_IMAGE="$1"
 BASE_IMAGE="$2"
 
-test ! -z "${BASE_IMAGE}" || ( echo "BASE_IMAGE is not specified" && false )
-test ! -z "${TARGET_IMAGE}" || ( echo "TARGET_IMAGE is not specified" && false )
+test -n "${BASE_IMAGE}" || ( echo "BASE_IMAGE is not specified" && false )
+test -n "${TARGET_IMAGE}" || ( echo "TARGET_IMAGE is not specified" && false )
 
 BASE_LAYER_DIGESTS="$(docker inspect ${BASE_IMAGE} | jq -r '.[0].RootFS.Layers | .[]')"
 TARGET_LAYER_DIGESTS="$(docker inspect ${TARGET_IMAGE} | jq -r '.[0].RootFS.Layers | .[]')"
