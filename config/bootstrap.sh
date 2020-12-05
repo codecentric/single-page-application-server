@@ -8,9 +8,9 @@ if [ -z "${CONFIG_FILES}" ] && [ -f "${CONFIG_DIR}/config.yaml" ]; then
 fi
 
 if [ -z "${CONFIG_FILES}" ]; then
-  export CONFIG_FILES="file://${CONFIG_DIR}/default_config.yaml"
+  export CONFIG_FILES="file://${CONFIG_DIR}/.internal_default.yaml"
 else
-  export CONFIG_FILES="merge:${CONFIG_FILES}|file://${CONFIG_DIR}/default_config.yaml"
+  export CONFIG_FILES="merge:${CONFIG_FILES}|file://${CONFIG_DIR}/.internal_default.yaml"
 fi
 
 rm -rf "${CONFIG_DIR}/.out"
