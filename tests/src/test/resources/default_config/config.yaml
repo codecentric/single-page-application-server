@@ -1,0 +1,3 @@
+default:
+  spa_config:
+    testProperty: "Overridden Value"

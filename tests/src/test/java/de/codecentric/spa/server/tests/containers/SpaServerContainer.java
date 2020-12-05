@@ -77,9 +77,16 @@ public class SpaServerContainer extends GenericContainer<SpaServerContainer> {
         withExposedPorts(options.exposedPorts);
         waitingFor(Wait.forListeningPort());
 
+        if (options.defaultConfigResourcePath != null) {
+            withClasspathResourceMapping(options.defaultConfigResourcePath, "/config/default.yaml", BindMode.READ_ONLY);
+        }
+
         if (options.configResourcePath != null) {
             withClasspathResourceMapping(options.configResourcePath, "/config/config.yaml", BindMode.READ_ONLY);
         }
+
+        options.additionalConfigResources
+            .forEach((key, value) -> withClasspathResourceMapping(value, key, BindMode.READ_ONLY));
     }
 
     private SpaServerContainer(@NonNull Future image) {
@@ -93,6 +100,9 @@ public class SpaServerContainer extends GenericContainer<SpaServerContainer> {
     @Builder
     public static class Options {
         public String configResourcePath;
+        public String defaultConfigResourcePath;
+        @Builder.Default
+        public Map<String, String> additionalConfigResources = ImmutableMap.of();
         @Builder.Default
         public String indexResourcePath = "simple_spa/index.html";
         public String spaConfigFileName;

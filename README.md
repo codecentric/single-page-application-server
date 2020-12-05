@@ -44,16 +44,16 @@ Copy your SPA resources to `/app/`. All resources in this directory will be serv
 
 ### YAML Configuration
 
-The container is configured using YAML files.
+The application container is configured via YAML files at startup time.
 
-You can mount your custom configuration file at `/config/config.yaml`. Every specified option in this file will override the default configuration.
+If you need to configure some default settings for your application image, you can add a default configuration file to `/config/default.yaml`.
+
+To configure settings at runtime, you can mount your runtime configuration file at `/config/config.yaml`. Every specified setting in this file will override the default setting.
 
 It is also possible to merge multiple configuration files by specifying the `CONFIG_FILES` environment variable like `CONFIG_FILES="file:///config/config1.yaml|file:///config/config2.yaml"`. The configuration options, specified in the first configuration file in that variable, will have priority over the options in later declared files.
 
-The following configuration shows the default values for every available option:
+The following configuration shows the default values of this base image for every available setting:
 ```yaml
-# Do not edit or replace this file!
-# Instead create a second config file, which overrides these defaults.
 default:
   # Specifies to which host names this configuration should apply.
   server_names:
@@ -114,7 +114,7 @@ default:
       style-src: "'self'"
 ```
 
-Aside to the `default` configuration block, you can also define other blocks, which might define configuration options for special hosts. The non-default blocks will inherit the configured options of the default-block if they are not explicitly redeclared.
+Aside to the `default` configuration block, you can also define other blocks, which might define configuration settings for special hosts. The non-default blocks will inherit the configured settings of the default-block if they are not explicitly redeclared.
 
 Example:
 ```yaml

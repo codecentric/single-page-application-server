@@ -1,0 +1,4 @@
+default:
+  spa_config:
+    defaultProperty: "This is not overridden"
+    testProperty: "Default Value"

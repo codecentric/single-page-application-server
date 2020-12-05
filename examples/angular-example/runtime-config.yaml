@@ -1,6 +1,3 @@
 default:
   spa_config:
     appTitle: "Prod Title"
-  hardening:
-    content_security_policy:
-      style-src: "'self' 'unsafe-inline'"

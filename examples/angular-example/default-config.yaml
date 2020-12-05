@@ -1,0 +1,4 @@
+default:
+  hardening:
+    content_security_policy:
+      style-src: "'self' 'unsafe-inline'"

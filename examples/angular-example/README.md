@@ -8,6 +8,7 @@ This is a small Angular example app, which includes a `spa_config.js` to configu
 2. Add `"src/spa_config.js"` to `.projects["your-project"].architect.build.options.assets` in `angular.json`
 3. Declare `spaConfig` in the `window` object via the TypeScript definition file `/src/@types/spa_config.d.ts`
 4. Add `<script src="./spa_config.js"></script>` to `index.html`
+5. Add a `/config/default.yaml` configuration file to the image, which allows 'unsafe-inline' styles. (See `default-config.yaml`, [#angular/26152](https://github.com/angular/angular/issues/26152))
 
 ## Build Dockerfile
 
