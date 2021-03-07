@@ -8,7 +8,8 @@ test -n "${TARGET_IMAGE}" || ( echo "TARGET_IMAGE is not specified" && false )
 
 set -x
 docker pull -q "${BASE_IMAGE}"
-docker pull -q "${TARGET_IMAGE}"
+
+docker pull -q "${TARGET_IMAGE}" || true
 
 /contains-all-layers-of "${1}" "${2}" && \
   echo '::set-output name=needs_update::false' || \
