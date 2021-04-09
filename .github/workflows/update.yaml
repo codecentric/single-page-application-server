@@ -1,5 +1,8 @@
 name: Update Docker Images
 on:
+  push:
+    branches:
+      - master
   schedule:
     # At 12:00 on Tuesday.
     - cron:  '0 12 * * 2'
