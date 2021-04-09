@@ -1,5 +1,5 @@
 # Single Page Application Server
-![Update Docker Images](https://github.com/codecentric/single-page-application-server/workflows/Update%20Docker%20Images/badge.svg?event=schedule)
+![Update Docker Images](https://github.com/codecentric/single-page-application-server/workflows/Update%20Docker%20Images/badge.svg)
 
 This image can be used as a base image for single page applications. It is itself based on Nginx.
 
