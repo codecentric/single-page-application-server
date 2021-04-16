@@ -15,14 +15,14 @@ There will also be tags for specific versions.
 ## General Features
 
 * Any non-existing routes return the root `index.html`
-  * Does NOT apply to resource routes with the following filename extensions: `js | css | ico | pdf | flv | jpg | jpeg | png | gif | swf`
+  * Does NOT apply to resource routes with filename extensions such as: `js | css | ico | pdf | flv | jpg | jpeg | png | gif | swf`
 * Configure application dynamically at container startup
 * Configure base element
 * Support environment specific configuration depending on the requested host (port and domain)
 * Hashed resources are cached indefinitely by the browser without revalidating
   * Resource name needs to look like `my-script.3f8a240b.js` or `my-script.3f8a240b.chunk.js`
     * Hash needs to consist of at least 8 characters
-  * Applies to resources with the following filename extensions: `js | css | ico | pdf | flv | jpg | jpeg | png | gif | swf`
+  * Applies to resources with filename extensions such as: `js | css | ico | pdf | flv | jpg | jpeg | png | gif | swf`
 * HTTP 2 is enabled by default for HTTPS connections
 
 ## Security Features
