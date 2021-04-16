@@ -250,7 +250,7 @@ public class HttpsTests {
 
     @Test
     public void owaspCShouldSupportTls10() {
-        shouldSupportTlsVersion("https/owasp_c.yaml", "1.0");
+        shouldSupportTlsVersion("https/owasp_c.yaml", "1.0", "1 ");
     }
 
     @Test
@@ -270,10 +270,14 @@ public class HttpsTests {
 
     @Test
     public void owaspDShouldSupportTls10() {
-        shouldSupportTlsVersion("https/owasp_d.yaml", "1.0");
+        shouldSupportTlsVersion("https/owasp_d.yaml", "1.0", "1 ");
     }
 
     private void shouldSupportTlsVersion(String configResourcePath, String version) {
+        shouldSupportTlsVersion(configResourcePath, version, version);
+    }
+
+    private void shouldSupportTlsVersion(String configResourcePath, String version, String assertVersion) {
         try (
             var network = Network.newNetwork();
             var container = new SpaServerContainer(SpaServerContainer.Options.builder()
@@ -287,7 +291,7 @@ public class HttpsTests {
             container.start();
 
             assertThat(curl(network, "curl", "--tls-max", version, "-s", "-v", "https://example.com"))
-                .contains("SSL connection using TLSv" + version);
+                .contains("SSL connection using TLSv" + assertVersion);
 
         }
     }
