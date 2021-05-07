@@ -1,4 +1,4 @@
-# Angular example with SpaConfig.js
+# React example with SpaConfig.js
 
 This is a small React example app, which includes a `SpaConfig.js` to configure the application.
 
