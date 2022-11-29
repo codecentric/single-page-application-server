@@ -25,4 +25,4 @@ rm -rf "${CONFIG_DIR}/.out"
 
 cd "${CONFIG_DIR}"
 
-gomplate -c "Servers=${CONFIG_FILES}" --input-dir "${CONFIG_DIR}/templates" --output-dir "${CONFIG_DIR}/.out/"
+gomplate -c "Servers=${CONFIG_FILES}" -f "${CONFIG_DIR}/main.tmpl" --template "${CONFIG_DIR}/templates"
