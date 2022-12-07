@@ -34,7 +34,7 @@ public class ContentSecurityPolicyTests {
             assertThat(response.statusCode()).isEqualTo(200);
 
             assertThat(response.headers().firstValue("Content-Security-Policy")).hasValue(
-                "base-uri 'self'; block-all-mixed-content; default-src 'self'; form-action 'self'; frame-ancestors 'self'; frame-src 'self'; object-src 'none'; script-src 'self'; style-src 'self'; connect-src https://example.com:1234 http://example.com https://example.com 'self'");
+                "base-uri 'self'; block-all-mixed-content; default-src 'self'; form-action 'self'; frame-ancestors 'self'; frame-src 'self'; object-src 'none'; script-src 'self'; style-src 'self'; connect-src https://example.com:1234 http://example.com https://example.com ws://example.com wss://example.com 'self'");
         }
     }
 

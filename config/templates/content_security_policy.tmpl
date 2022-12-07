@@ -11,7 +11,7 @@
   {{ if and .hardening.whitelist_spa_config_endpoints_as_connect_sources (not (index .hardening.content_security_policy "connect-src")) (ne (len .spa_config.endpoints) 0) -}}
     connect-src
     {{- range $key, $value := .spa_config.endpoints -}}
-      {{- if $value | regexp.Match "^http(s)?:\\/\\/" -}}
+      {{- if $value | regexp.Match "^(http(s)?|ws(s)?):\\/\\/" -}}
         {{- $url := $value | conv.URL -}}
         {{ " " }}{{ $url.Scheme }}://{{ $url.Host }}
       {{- end -}}
