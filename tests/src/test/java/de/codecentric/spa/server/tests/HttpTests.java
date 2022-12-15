@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HttpTests {
 
     @Test
-    public void shouldListenOnPort80byDefault() throws IOException, InterruptedException {
+    public void shouldListenOnPort80byDefault() {
         try (
             var network = Network.newNetwork();
             var container = new SpaServerContainer()

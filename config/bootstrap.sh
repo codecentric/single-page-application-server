@@ -26,3 +26,4 @@ rm -rf "${CONFIG_DIR}/.out"
 cd "${CONFIG_DIR}"
 
 gomplate -c "Servers=${CONFIG_FILES}" -f "${CONFIG_DIR}/main.tmpl" --template "${CONFIG_DIR}/templates"
+cp "${CONFIG_DIR}/nginx.http.conf" "${CONFIG_DIR}/.out/conf.d/"

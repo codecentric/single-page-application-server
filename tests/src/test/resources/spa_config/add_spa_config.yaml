@@ -6,5 +6,6 @@ secondary_server:
   server_names:
     - "secondary-server.com"
     - "www.secondary-server.com"
+    - "very-long-subdomain-that-should-be-supported-by-default.example.com"
   spa_config:
     testProperty: "Secondary Server Value"

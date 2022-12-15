@@ -72,7 +72,10 @@ public class SpaConfigTests {
                     .spaConfigResourcePath("spa_config/spa_config.js")
                     .build())
                 .withNetwork(network)
-                .withNetworkAliases("secondary-server.com", "www.secondary-server.com");
+                .withNetworkAliases(
+                    "secondary-server.com",
+                    "www.secondary-server.com",
+                    "very-long-subdomain-that-should-be-supported-by-default.example.com");
         ) {
             container.start();
 
@@ -89,6 +92,9 @@ public class SpaConfigTests {
             assertCurlLogContains(network,
                 "http://www.secondary-server.com/spa_config.8f066938e2c25bff04e88e979e97cb8b8dd092bc.js",
                 "var spaConfig = {\"defaultProperty\":\"This is not overridden\",\"endpoints\":{},\"testProperty\":\"Secondary Server Value\"}");
+
+            assertCurlLogContains(network, "http://very-long-subdomain-that-should-be-supported-by-default.example.com",
+                "<script type=\"text/javascript\" src=\"./spa_config.8f066938e2c25bff04e88e979e97cb8b8dd092bc.js\"></script>");
         }
 
     }
