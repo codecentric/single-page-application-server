@@ -290,7 +290,7 @@ public class HttpsTests {
         ) {
             container.start();
 
-            assertThat(curl(network, "curl", "--tls-max", version, "-s", "-v", "https://example.com"))
+            assertThat(curl(network, "curl", "--ciphers", "DEFAULT@SECLEVEL=0", "--tls-max", version, "-s", "-v", "https://example.com"))
                 .contains("SSL connection using TLSv" + assertVersion);
 
         }
@@ -309,7 +309,7 @@ public class HttpsTests {
         ) {
             container.start();
 
-            assertThat(curl(network, "curl", "--tls-max", version, "-s", "-v", "https://example.com"))
+            assertThat(curl(network, "curl", "--ciphers", "DEFAULT@SECLEVEL=0", "--tls-max", version, "-s", "-v", "https://example.com"))
                 .contains("alert protocol version");
 
         }

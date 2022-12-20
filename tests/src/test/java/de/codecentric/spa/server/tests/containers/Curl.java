@@ -12,7 +12,7 @@ public class Curl {
         return new GenericContainer(new ImageFromDockerfile()
             .withFileFromClasspath("test-ca.pem", "test_pki/ca.pem")
             .withDockerfileFromBuilder(dockerfileBuilder -> dockerfileBuilder
-                .from("alpine:3.16")
+                .from("alpine")
                 .run("apk --no-cache add curl")
                 .copy("test-ca.pem", "/usr/local/share/ca-certificates/")
                 .run("update-ca-certificates")
