@@ -39,6 +39,7 @@ Examples for usage with Angular and React are located in the `examples` director
 * HTTPS uses [recommended OWASP protocols and cipher suites](https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html)
 * Container runs as non-root user
   * Nevertheless the server can still bind to port 80 and 443
+* Serving source map files (*.js.map, *.css.map) is disabled by default 
 
 ## Configuration
 
@@ -75,6 +76,11 @@ default:
   access_log:
     # Enables access logging
     enabled: false
+  source_maps:
+    # Enables source maps
+    enabled: false
+    # Configures the regex that is used to identify source map resources
+    regex: "\\.(js|css)\\.map$"
   http:
     enabled: true
     port: 80

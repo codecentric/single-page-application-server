@@ -17,6 +17,11 @@ default:
   access_log:
     # Enables access logging
     enabled: false
+  source_maps:
+    # Enables source maps
+    enabled: false
+    # Configures the regex that is used to identify source map resources
+    regex: "\\.(js|css)\\.map$"
   http:
     enabled: true
     port: 80

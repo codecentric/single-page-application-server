@@ -1,0 +1,3 @@
+default:
+  source_maps:
+    regex: "\\.((js|css)\\.map|ts)$"

@@ -1,0 +1,3 @@
+default:
+  source_maps:
+    enabled: true
