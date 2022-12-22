@@ -20,3 +20,5 @@ $ docker build -t react-example .
 ```bash
 $ docker run -it --rm -p 8080:80 -v "$(pwd)/runtime-config.yaml:/config/config.yaml" react-example
 ```
+
+In the browser on `http://localhost:8080` should be a page visible containing the text `Prod Title`.
