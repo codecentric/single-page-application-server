@@ -12,6 +12,10 @@ The following tags will be updated automatically with the latest nginx base imag
 
 There will also be tags for specific versions.
 
+## Examples
+
+Examples for usage with Angular and React are located in the `examples` directory.
+
 ## General Features
 
 * Any non-existing routes return the root `index.html`
