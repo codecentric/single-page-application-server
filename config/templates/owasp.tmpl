@@ -5,9 +5,9 @@
  {{- else if eq . "B" -}}
    TLSv1.2 TLSv1.3
  {{- else if eq . "C" -}}
-   TLSv1 TLSv1.1 TLSv1.2 TLSv1.3
+   TLSv1.2 TLSv1.3
  {{- else if eq . "D" -}}
-   TLSv1 TLSv1.1 TLSv1.2 TLSv1.3
+   TLSv1.2 TLSv1.3
  {{- else -}}
    {{ test.Fail "Invalid owasp_string provided" }}
  {{- end -}}

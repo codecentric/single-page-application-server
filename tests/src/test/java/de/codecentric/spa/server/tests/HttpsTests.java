@@ -2,6 +2,7 @@ package de.codecentric.spa.server.tests;
 
 import de.codecentric.spa.server.tests.containers.SpaServerContainer;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.Network;
 
@@ -204,11 +205,13 @@ public class HttpsTests {
     }
 
     @Test
+    @Disabled("See https://github.com/nginxinc/docker-nginx/issues/743")
     public void shouldNotSupportTls11ByDefault() {
         shouldNotSupportTlsVersion("https/enabled.yaml", "1.1");
     }
 
     @Test
+    @Disabled("See https://github.com/nginxinc/docker-nginx/issues/743")
     public void shouldNotSupportTls10ByDefault() {
         shouldNotSupportTlsVersion("https/enabled.yaml", "1.0");
     }
@@ -244,11 +247,13 @@ public class HttpsTests {
     }
 
     @Test
+    @Disabled("See https://github.com/nginxinc/docker-nginx/issues/743")
     public void owaspCShouldSupportTls11() {
         shouldSupportTlsVersion("https/owasp_c.yaml", "1.1");
     }
 
     @Test
+    @Disabled("See https://github.com/nginxinc/docker-nginx/issues/743")
     public void owaspCShouldSupportTls10() {
         shouldSupportTlsVersion("https/owasp_c.yaml", "1.0", "1 ");
     }
@@ -264,11 +269,13 @@ public class HttpsTests {
     }
 
     @Test
+    @Disabled("See https://github.com/nginxinc/docker-nginx/issues/743")
     public void owaspDShouldSupportTls11() {
         shouldSupportTlsVersion("https/owasp_d.yaml", "1.1");
     }
 
     @Test
+    @Disabled("See https://github.com/nginxinc/docker-nginx/issues/743")
     public void owaspDShouldSupportTls10() {
         shouldSupportTlsVersion("https/owasp_d.yaml", "1.0", "1 ");
     }
