@@ -1,5 +1,5 @@
 ARG NGINX_TAG
-FROM hairyhenderson/gomplate:v3-slim as gomplate
+FROM hairyhenderson/gomplate:v3 as gomplate
 FROM nginxinc/nginx-unprivileged:${NGINX_TAG} as single-page-app-server
 COPY --from=gomplate /gomplate /usr/local/bin/gomplate
 
