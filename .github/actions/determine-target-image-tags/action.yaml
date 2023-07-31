@@ -10,6 +10,9 @@ inputs:
   matrix-nginx:
     required: true
     description: 'Value of matrix.nginx'
+  docker-repository:
+    required: true
+    description: 'The docker-repository to prefix the tags with'
 outputs:
   tags:
     description: 'A comma separated list of tags to push'
@@ -20,3 +23,4 @@ runs:
     GIT_REF: "${{ inputs.git-ref }}"
     NGINX_TAG: "${{ inputs.nginx-tag }}"
     MATRIX_NGINX: "${{ inputs.matrix-nginx }}"
+    DOCKER_REPOSITORY: "${{ inputs.docker-repository }}"
