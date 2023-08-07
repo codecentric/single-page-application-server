@@ -54,7 +54,7 @@ jobs:
         if: ${{ steps.target_tags.outputs.tags != '' }}
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm/v7,linux/amd64,linux/arm64
           push: true
           pull: true
           tags: ${{ steps.target_tags.outputs.tags }}

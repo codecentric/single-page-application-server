@@ -84,7 +84,7 @@ jobs:
         if: ${{ steps.check_if_update_is_necessary.outputs.needs_update == 'true' && steps.target_image_name.outputs.tags != '' }}
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm/v7,linux/amd64,linux/arm64
           push: true
           pull: true
           tags: ${{ steps.target_image_name.outputs.tags }}
