@@ -12,6 +12,8 @@ server {
 
     server_name {{ join .server_names " " }};
 
+    keepalive_timeout {{ .keepalive.server.timeout_seconds }}s;
+
     {{ tmpl.Exec "access_log" .access_log }}
 
 {{ tmpl.Exec "server-hardening" . | strings.Indent 4 " " }}
@@ -36,6 +38,8 @@ server {
     {{- end }}
 
     server_name         {{ join .server_names " " }};
+
+    keepalive_timeout {{ .keepalive.server.timeout_seconds }}s;
 
     {{ tmpl.Exec "access_log" .access_log }}
 
