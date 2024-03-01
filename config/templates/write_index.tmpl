@@ -9,8 +9,8 @@
   {{- /* Remove existing base element */ -}}
   {{- $file_content := $file_content | regexp.ReplaceLiteral "<base[^>]*>" "" -}}
 
-  {{- /* Insert new base element before title element */ -}}
-  {{- $file_content = $file_content | regexp.ReplaceLiteral "<title>" (print "<base href=\"" .base_href "\" /><title>") -}}
+  {{- /* Insert new base element at the top of the head section. See https://github.com/codecentric/single-page-application-server/issues/11 */ -}}
+  {{- $file_content = $file_content | regexp.ReplaceLiteral "<head>" (print "<head><base href=\"" .base_href "\" />") -}}
 
   {{- /* Replace occurrences of spa_config.js with spa_config.{hash}.js */ -}}
   {{- $file_content = $file_content | regexp.ReplaceLiteral "(?i)spa(_)?config(\\.[a-f0-9]{4,})?\\.js" (print "spa_config." .spa_config_hash ".js") -}}
