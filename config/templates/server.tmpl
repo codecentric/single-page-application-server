@@ -26,6 +26,9 @@ server {
 
 {{ end -}}
 server {
+    {{- $config_dir := env.Getenv "CONFIG_DIR" | test.Required "CONFIG_DIR is not defined" -}}
+    {{- $out_www_dir := (filepath.Join $config_dir ".out" "www") -}}
+
     {{- if and .http.enabled (not (and .https.enabled .http.https_redirect)) }}
     listen              {{ .http.port }}{{ if .http.http2_enabled }} http2{{ end }}{{ if .is_default }} default_server{{ end }};
     {{- end }}
@@ -41,10 +44,45 @@ server {
 
     keepalive_timeout {{ .keepalive.server.timeout_seconds }}s;
 
+    root   {{ $app_root }};
+
     {{ tmpl.Exec "access_log" .access_log }}
 
 {{ tmpl.Exec "server-hardening" . | strings.Indent 4 " " }}
 {{ tmpl.Exec "general-security-headers" . | strings.Indent 4 " " }}
+
+    location = /spa_config.js {
+        return 404;
+    }
+
+    location = /spaConfig.js {
+        return 404;
+    }
+
+    location = /SpaConfig.js {
+        return 404;
+    }
+
+    location = /spa_config.{{ .spa_config_hash }}.js {
+        root {{ $out_www_dir }};
+        etag   off;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+{{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
+    }
+
+    location = /index.html {
+        add_header Cache-Control "no-cache, max-age=0";
+{{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
+
+        return 200 /{{ .index }};
+    }
+
+    location = /{{- .index }} {
+        add_header Cache-Control "no-cache, max-age=0";
+{{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
+
+        root {{ $out_www_dir }};
+    }
 
     error_page 500 502 503 504  /50x.html;
     location = /50x.html {
@@ -60,14 +98,12 @@ server {
     # Prevent server requests on hashed resources
     # We ignore html files with hashes as they might got modified
     location ~* "\.[a-f0-9]{8,}(\.chunk)?\.(css|ico|pdf|flv|jpg|jpeg|png|gif|svg|ttf|otf|eot|woff|woff2|swf|map)$" {
-        root   {{ $app_root }};
         etag   off;
         add_header Cache-Control "public, max-age=31536000, immutable";
 {{ tmpl.Exec "general-security-headers" . | strings.Indent 8 " " }}
     }
 
     location ~* "\.[a-f0-9]{8,}(\.chunk)?\.js$" {
-        root   {{ $app_root }};
         etag   off;
         add_header Cache-Control "public, max-age=31536000, immutable";
 {{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
@@ -75,26 +111,22 @@ server {
 
     # Return resource or 404 if resource could not be found
     location ~* "\.(css|ico|pdf|flv|jpg|jpeg|png|gif|svg|ttf|otf|eot|woff|woff2|swf|map)$" {
-        root   {{ $app_root }};
         add_header Cache-Control "no-cache, max-age=0";
 {{ tmpl.Exec "general-security-headers" . | strings.Indent 8 " " }}
     }
 
     # Return resource or 404 if explicitly requested HTML or JavaScript document could not be found
     location ~* "\.(js|html|htm)$" {
-        root   {{ $app_root }};
         add_header Cache-Control "no-cache, max-age=0";
 {{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
     }
 
-    # Return index.html on other requests by default
+    # Return index on other requests by default
     location / {
-        root   {{ $app_root }};
         add_header Cache-Control "no-cache, max-age=0";
 {{ tmpl.Exec "web-document-hardening" . | strings.Indent 8 " " }}
 
-        # Return index.html if it exists (does not exist in root as we delete it)
-        index  index.html;
+        index {{ .index -}};
         try_files $uri /{{- .index -}};
     }
 

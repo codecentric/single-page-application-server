@@ -146,6 +146,17 @@ special_host:
 
 With this configuration the application would have the app title "My Special Application", when it is accessed via the host `special.example.com`, while the endpoints would stay the same in every instance of the application.
 
+## Read-only Root Filesystem Support
+
+It is recommended to use a read-only root filesystem when running containers. However, the following directories must remain writable when using this base image: 
+
+* `/config/.out`
+  * This base image generates files in this directory at startup.
+* `/tmp`
+  * Nginx uses this directory to manage cached files and the nginx.pid file. For more information, see [nginxinc/docker-nginx-unprivileged#troubleshooting-tips](https://github.com/nginxinc/docker-nginx-unprivileged/tree/af6e325d35e6833af9cdda8493866b88649e8aaf?tab=readme-ov-file#troubleshooting-tips).
+
+It is possible to mount these directories as writable volumes. When using Kubernetes, one solution is to mount `emptyDir` volumes at these mount points.
+
 ## Development
 
 Configuration files are dynamically generated via [gomplate templates](https://docs.gomplate.ca/).

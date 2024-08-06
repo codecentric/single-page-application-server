@@ -10,5 +10,5 @@
 {{- range $key, $server := $effectiveConfig -}}
   {{- $spa_config_hash := tmpl.Exec "write-spa_config" $server -}}
   {{- $new_index := tmpl.Exec "write-index" (dict "path" "index.html" "base_href" $server.base_href "spa_config_hash" $spa_config_hash ) -}}
-  {{- template "write-nginx-server-conf" (dict "name" $key "config" (merge (dict "index" $new_index) $server)) -}}
+  {{- template "write-nginx-server-conf" (dict "name" $key "config" (merge (dict "index" $new_index "spa_config_hash" $spa_config_hash) $server)) -}}
 {{ end -}}

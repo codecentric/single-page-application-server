@@ -17,6 +17,6 @@
 
   {{- $file_hash := ($file_content | crypto.SHA1) -}}
   {{- $new_path := .path | regexp.ReplaceLiteral "\\.htm(l)?$" (print "." $file_hash ".html") -}}
-  {{- $file_content | file.Write (filepath.Join $config_dir ".out" $new_path) -}}
+  {{- $file_content | file.Write (filepath.Join $config_dir ".out" "www" $new_path) -}}
   {{- $new_path -}}
 {{- end -}}

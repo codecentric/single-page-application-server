@@ -21,7 +21,8 @@ else
   CONFIG_FILES="merge:${CONFIG_FILES}|file://${CONFIG_DIR}/.internal_default.yaml"
 fi
 
-rm -rf "${CONFIG_DIR}/.out"
+rm -rf "${CONFIG_DIR}/.out/*"
+mkdir -p "${CONFIG_DIR}/.out/www"
 
 cd "${CONFIG_DIR}"
 
