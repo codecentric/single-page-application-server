@@ -1,2 +1,6 @@
-/dist
-/node_modules
+dist
+node_modules
+Dockerfile
+.angular
+.idea
+.vscode
