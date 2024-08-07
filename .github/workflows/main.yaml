@@ -5,7 +5,7 @@ on:
       - v*
 
 jobs:
-  test:
+  push_images:
     name: Test and Push Images
     runs-on: ubuntu-latest
     strategy:
@@ -39,7 +39,7 @@ jobs:
           git-ref: "${{ github.ref }}"
           nginx-tag: "${{ steps.target_nginx_tag.outputs.tag }}"
           matrix-nginx: "${{ matrix.nginx }}"
-          docker-repository: "${{ secrets.DOCKER_REPOSITORY }}"
+          docker-repository: "${{ vars.DOCKER_REPOSITORY }}"
       - uses: docker/setup-qemu-action@v2
         name: Set up QEMU
       - uses: docker/setup-buildx-action@v2

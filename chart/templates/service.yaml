@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "single-page-application-server.fullname" . }}
+  labels:
+    {{- include "single-page-application-server.labels" . | nindent 4 }}
+  annotations:
+    {{- if (and .Values.openshift.route.enabled (eq .Values.openshift.route.tls.termination "reencrypt")) }}
+    "service.beta.openshift.io/serving-cert-secret-name": "{{ include "single-page-application-server.fullname" . }}-cert"
+    {{- end }}
+    {{- with .Values.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+      appProtocol: http
+      {{- if .Values.service.httpNodePort }}
+      nodePort: {{ .Values.service.httpNodePort }}
+      {{- end }}
+    - port: {{ .Values.service.httpsPort }}
+      targetPort: https
+      protocol: TCP
+      name: https
+      appProtocol: https
+      {{- if .Values.service.httpsNodePort }}
+      nodePort: {{ .Values.service.httpsNodePort }}
+      {{- end }}
+  selector:
+    {{- include "single-page-application-server.selectorLabels" . | nindent 4 }}

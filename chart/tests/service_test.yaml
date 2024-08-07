@@ -1,0 +1,63 @@
+suite: test service
+templates:
+  - service.yaml
+tests:
+  - it: should render minimal values
+    values:
+      - ./values/minimal_values.yaml
+    asserts:
+      - matchSnapshot: {}
+  - it: should support alternative http port
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      service.httpPort: 8080
+    asserts:
+      - matchSnapshot: {}
+  - it: should support alternative https port
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      service.httpsPort: 8443
+    asserts:
+      - matchSnapshot: {}
+  - it: should support httpNodePort
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      service:
+        type: NodePort
+        httpNodePort: 8080
+    asserts:
+      - matchSnapshot: {}
+  - it: should support httpsNodePort
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      service:
+        type: NodePort
+        httpsNodePort: 8443
+    asserts:
+      - matchSnapshot: { }
+  - it: should set serving-cert-secret-name annotation if openshift.route is enabled and openshift.route.tls.termination is set to reencrypt
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      openshift:
+        route:
+          enabled: true
+          tls:
+            termination: reencrypt
+    asserts:
+      - matchSnapshot: { }
+  - it: should not set serving-cert-secret-name annotation if openshift.route is enabled, but openshift.route.tls.termination is not set to reencrypt
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      openshift:
+        route:
+          enabled: true
+          tls:
+            termination: edge
+    asserts:
+      - matchSnapshot: { }

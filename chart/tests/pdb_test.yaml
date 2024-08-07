@@ -1,0 +1,38 @@
+suite: test pdb
+templates:
+  - pdb.yaml
+tests:
+  - it: should not render pdb if disabled
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod.disruptionBudget.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should render pdb by default
+    values:
+      - ./values/minimal_values.yaml
+    asserts:
+      - matchSnapshot: { }
+  - it: should fail if minAvailable >= replicas
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod:
+        replicas: 2
+        disruptionBudget:
+          minAvailable: 2
+    asserts:
+      - failedTemplate:
+          errorMessage: "replicaCount must be greater than pod.disruptionBudget.minAvailable!"
+  - it: should render with minAvailable
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod:
+        disruptionBudget:
+          minAvailable: 1
+          maxUnavailable: 0
+    asserts:
+      - matchSnapshot: { }

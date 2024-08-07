@@ -1,0 +1,1005 @@
+should mount tls secret if openshift.route.enabled and openshift.route.tls.termination is reencrypt:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+                - mountPath: /var/run/secrets/tls
+                  name: tls
+                  readOnly: true
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+            - name: tls
+              secret:
+                defaultMode: 292
+                optional: false
+                secretName: RELEASE-NAME-cert
+should not render replicas if autoscaling is enabled:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+should render minimal values:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+should render with affinity:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: disktype
+                        operator: In
+                        values:
+                          - ssd
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+should render with extra volume:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+                - mountPath: /mnt/foo
+                  name: myvolume
+                  readOnly: true
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+            - name: myvolume
+              secret:
+                optional: false
+                secretName: mysecret
+should render with nodeSelector:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          nodeSelector:
+            myNodeLabel: myNodeLabelValue
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+should render with pull secret:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          imagePullSecrets:
+            - my-pull-secret
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+should render with tolerations:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          securityContext:
+            runAsNonRoot: true
+          tolerations:
+            - effect: NoSchedule
+              key: example-key
+              operator: Exists
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+should support alternative http port:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: a65dc1dcf5388bced1711c8a1233763c4cfb3441
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 8080
+                  name: http
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+should support alternative https port:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: dce4af80cd48a768c53dfab8d2832b9a29701d5e
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+                - containerPort: 8443
+                  name: https
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp
+should support enabling https:
+  1: |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      template:
+        metadata:
+          annotations:
+            checksum/config-map: 321726841793faccc874ccca587d3c1092e28a33
+          labels:
+            app.kubernetes.io/component: frontend
+            app.kubernetes.io/instance: default
+            app.kubernetes.io/managed-by: Helm
+            app.kubernetes.io/name: RELEASE-NAME
+            app.kubernetes.io/version: latest
+            helm.sh/chart: single-page-application-server-0.0.0
+        spec:
+          automountServiceAccountToken: false
+          containers:
+            - image: spa-example:latest
+              imagePullPolicy: Always
+              livenessProbe:
+                httpGet:
+                  path: /health/liveness
+                  port: http
+              name: single-page-application
+              ports:
+                - containerPort: 80
+                  name: http
+                  protocol: TCP
+                - containerPort: 443
+                  name: https
+                  protocol: TCP
+              readinessProbe:
+                httpGet:
+                  path: /health/readiness
+                  port: http
+              resources:
+                limits:
+                  cpu: 2
+                  memory: 4Gi
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+              securityContext:
+                capabilities:
+                  drop:
+                    - ALL
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+              volumeMounts:
+                - mountPath: /config/config.yaml
+                  name: config
+                  readOnly: true
+                  subPath: config.yaml
+                - mountPath: /config/.out
+                  name: config-out
+                  readOnly: false
+                - mountPath: /tmp
+                  name: tmp
+                  readOnly: false
+          securityContext:
+            runAsNonRoot: true
+          volumes:
+            - configMap:
+                defaultMode: 292
+                name: RELEASE-NAME
+                optional: false
+              name: config
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 256Mi
+              name: config-out
+            - emptyDir:
+                medium: Memory
+                sizeLimit: 2Gi
+              name: tmp

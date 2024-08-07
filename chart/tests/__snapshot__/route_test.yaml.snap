@@ -1,0 +1,119 @@
+should render multiple routes with default values if enabled:
+  1: |
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+        spa-hostname: test1.example.com
+      name: RELEASE-NAME-7c1ed4265ba3c1ce98e9cc6d503a6c5202c29ea5
+    spec:
+      host: test1.example.com
+      port:
+        targetPort: https
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: reencrypt
+      to:
+        kind: Service
+        name: RELEASE-NAME
+  2: |
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+        spa-hostname: test2.example.com
+      name: RELEASE-NAME-09e9022420541515ce5a1224d76c17598e617443
+    spec:
+      host: test2.example.com
+      port:
+        targetPort: https
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: reencrypt
+      to:
+        kind: Service
+        name: RELEASE-NAME
+should render route with default values if enabled:
+  1: |
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+        spa-hostname: test.example.com
+      name: RELEASE-NAME-401f83bc96721eeeba6f5c1c54cf0a83dc08a30b
+    spec:
+      host: test.example.com
+      port:
+        targetPort: https
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: reencrypt
+      to:
+        kind: Service
+        name: RELEASE-NAME
+should render targetPort with http if tls.termination is set to edge:
+  1: |
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+        spa-hostname: test.example.com
+      name: RELEASE-NAME-401f83bc96721eeeba6f5c1c54cf0a83dc08a30b
+    spec:
+      host: test.example.com
+      port:
+        targetPort: http
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: RELEASE-NAME
+should support overriding tls.insecureEdgeTerminationPolicy:
+  1: |
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+        spa-hostname: test.example.com
+      name: RELEASE-NAME-401f83bc96721eeeba6f5c1c54cf0a83dc08a30b
+    spec:
+      host: test.example.com
+      port:
+        targetPort: https
+      tls:
+        insecureEdgeTerminationPolicy: None
+        termination: reencrypt
+      to:
+        kind: Service
+        name: RELEASE-NAME

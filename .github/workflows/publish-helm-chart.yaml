@@ -1,0 +1,44 @@
+name: Test and Push Helm Chart
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get Latest Semantic Version
+        id: get_latest_version
+        uses: PSanetra/git-semver-actions/latest@v1
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+
+      - name: Install Helm Unittest Plugin
+        run: helm plugin install https://github.com/helm-unittest/helm-unittest
+
+      - name: Run Helm Lint
+        run: helm lint chart --strict
+
+      - name: Run Helm Unit Tests
+        run: helm unittest chart --strict
+
+      - name: Package Helm Chart
+        run: helm package chart -u --version ${{ steps.get_latest_version.outputs.version }} --destination .
+
+      - name: Install yq
+        run: sudo apt-get install -y yq
+
+      - name: Login to Docker Hub
+        run: echo '${{ secrets.DOCKER_PASSWORD }}' | helm registry login ${{ vars.DOCKER_REPOSITORY }} --username '${{ secrets.DOCKER_USERNAME }}' --password-stdin
+
+      - name: Push Helm Chart to OCI Registry
+        run: |
+          helm push $(yq -r '.name' ./chart/Chart.yaml | tr -d '\n')-${{ steps.get_latest_version.outputs.version }}.tgz oci://${{ vars.DOCKER_REPOSITORY }}
+          helm push $(yq -r '.name' ./chart/Chart.yaml | tr -d '\n')-${{ steps.get_latest_version.outputs.version }}.tgz oci://${{ vars.DOCKER_REPOSITORY }}:latest

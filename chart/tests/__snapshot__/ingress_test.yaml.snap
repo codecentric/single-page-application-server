@@ -1,0 +1,111 @@
+should render host with custom path and targetServicePortName:
+  1: |
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ingressClassName: testingress
+      rules:
+        - host: test.example.com
+          http:
+            paths:
+              - backend:
+                  service:
+                    name: RELEASE-NAME
+                    port:
+                      name: http
+                path: /custom-path
+                pathType: Prefix
+      tls: null
+should render ingress with default values if enabled:
+  1: |
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ingressClassName: testingress
+      rules:
+        - host: test.example.com
+          http:
+            paths:
+              - backend:
+                  service:
+                    name: RELEASE-NAME
+                    port:
+                      name: http
+                path: /
+                pathType: Prefix
+      tls: null
+should render ingress with default.base_href if path is not defined:
+  1: |
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ingressClassName: testingress
+      rules:
+        - host: test.example.com
+          http:
+            paths:
+              - backend:
+                  service:
+                    name: RELEASE-NAME
+                    port:
+                      name: http
+                path: /base-path
+                pathType: Prefix
+      tls: null
+should render tls property if http."host".tlsSecretName is set:
+  1: |
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ingressClassName: testingress
+      rules:
+        - host: test.example.com
+          http:
+            paths:
+              - backend:
+                  service:
+                    name: RELEASE-NAME
+                    port:
+                      name: http
+                path: /
+                pathType: Prefix
+      tls:
+        - hosts:
+            - test.example.com
+          secretName: my-tls-secret

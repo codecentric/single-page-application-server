@@ -33,12 +33,12 @@ jobs:
         id: target_image_name
         run: |
           IMAGE_TAG="${{ matrix.spa_server_major_version }}-nginx-${{ steps.target_nginx_tag.outputs.tag }}"
-          IMAGE_NAME="${{ secrets.DOCKER_REPOSITORY }}:${IMAGE_TAG}"
+          IMAGE_NAME="${{ vars.DOCKER_REPOSITORY }}:${IMAGE_TAG}"
           echo "::set-output name=image_name::${IMAGE_NAME}"
           echo "IMAGE_NAME=${IMAGE_NAME}"
-          TAGS="${{ secrets.DOCKER_REPOSITORY }}:${IMAGE_TAG}"
+          TAGS="${{ vars.DOCKER_REPOSITORY }}:${IMAGE_TAG}"
           if [ "latest" = "${{ matrix.spa_server_major_version }}" ] && [ "stable" = "${{ matrix.nginx }}" ]; then
-            TAGS="${TAGS},${{ secrets.DOCKER_REPOSITORY }}:${{ matrix.spa_server_major_version }},${{ secrets.DOCKER_REPOSITORY }}:latest"
+            TAGS="${TAGS},${{ vars.DOCKER_REPOSITORY }}:${{ matrix.spa_server_major_version }},${{ vars.DOCKER_REPOSITORY }}:latest"
           fi
           echo "::set-output name=tags::${TAGS}"
           echo "TAGS=${TAGS}"

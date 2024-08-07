@@ -1,0 +1,50 @@
+suite: test network-policy
+templates:
+  - network-policy.yaml
+tests:
+  - it: should not render network-policy if disabled
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      networkPolicy.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should render network-policy with egress isolation by default
+    values:
+      - ./values/minimal_values.yaml
+    asserts:
+      - matchSnapshot: { }
+  - it: should render network-policy with custom egress policy
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      networkPolicy:
+        egress:
+          - to:
+              - ipBlock:
+                  cidr: 10.0.0.0/24
+            ports:
+              - protocol: TCP
+                port: 5978
+    asserts:
+      - matchSnapshot: { }
+  - it: should render network-policy with custom ingress policy
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      networkPolicy:
+        policyTypes:
+          - Ingress
+        ingress:
+          - from:
+              - namespaceSelector:
+                  matchLabels:
+                    "kubernetes.io/metadata.name": myingresscontroller
+            ports:
+              - protocol: TCP
+                port: http
+              - protocol: TCP
+                port: https
+    asserts:
+      - matchSnapshot: { }

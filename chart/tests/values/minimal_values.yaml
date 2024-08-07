@@ -1,0 +1,5 @@
+pod:
+  container:
+    image:
+      repository: spa-example
+      tag: latest

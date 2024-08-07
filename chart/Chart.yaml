@@ -1,0 +1,5 @@
+apiVersion: v2
+name: single-page-application-server
+description: A Helm chart for deployment of applications which are using the codecentric/single-page-application-server base image.
+type: application
+version: 0.0.0

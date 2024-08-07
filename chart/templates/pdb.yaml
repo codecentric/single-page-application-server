@@ -1,0 +1,21 @@
+{{- if .Values.pod.disruptionBudget.enabled -}}
+{{- if ge .Values.pod.disruptionBudget.minAvailable .Values.pod.replicaCount -}}
+  {{- fail "replicaCount must be greater than pod.disruptionBudget.minAvailable!" -}}
+{{- end -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "single-page-application-server.fullname" . }}
+  labels:
+    {{- include "single-page-application-server.labels" . | nindent 4 }}
+spec:
+  {{ if .Values.pod.disruptionBudget.minAvailable -}}
+  minAvailable: {{ .Values.pod.disruptionBudget.minAvailable }}
+  {{ end -}}
+  {{ if .Values.pod.disruptionBudget.maxUnavailable -}}
+  maxUnavailable: {{ .Values.pod.disruptionBudget.maxUnavailable }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      {{- include "single-page-application-server.selectorLabels" . | nindent 6 }}
+{{- end -}}

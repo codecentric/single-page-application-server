@@ -1,0 +1,213 @@
+? should not set serving-cert-secret-name annotation if openshift.route is enabled, but openshift.route.tls.termination is not set to reencrypt
+: 1: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      annotations: null
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ports:
+        - appProtocol: http
+          name: http
+          port: 80
+          protocol: TCP
+          targetPort: http
+        - appProtocol: https
+          name: https
+          port: 443
+          protocol: TCP
+          targetPort: https
+      selector:
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: RELEASE-NAME
+      type: ClusterIP
+should render minimal values:
+  1: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      annotations: null
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ports:
+        - appProtocol: http
+          name: http
+          port: 80
+          protocol: TCP
+          targetPort: http
+        - appProtocol: https
+          name: https
+          port: 443
+          protocol: TCP
+          targetPort: https
+      selector:
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: RELEASE-NAME
+      type: ClusterIP
+? should set serving-cert-secret-name annotation if openshift.route is enabled and openshift.route.tls.termination is set to reencrypt
+: 1: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        service.beta.openshift.io/serving-cert-secret-name: RELEASE-NAME-cert
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ports:
+        - appProtocol: http
+          name: http
+          port: 80
+          protocol: TCP
+          targetPort: http
+        - appProtocol: https
+          name: https
+          port: 443
+          protocol: TCP
+          targetPort: https
+      selector:
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: RELEASE-NAME
+      type: ClusterIP
+should support alternative http port:
+  1: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      annotations: null
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ports:
+        - appProtocol: http
+          name: http
+          port: 8080
+          protocol: TCP
+          targetPort: http
+        - appProtocol: https
+          name: https
+          port: 443
+          protocol: TCP
+          targetPort: https
+      selector:
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: RELEASE-NAME
+      type: ClusterIP
+should support alternative https port:
+  1: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      annotations: null
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ports:
+        - appProtocol: http
+          name: http
+          port: 80
+          protocol: TCP
+          targetPort: http
+        - appProtocol: https
+          name: https
+          port: 8443
+          protocol: TCP
+          targetPort: https
+      selector:
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: RELEASE-NAME
+      type: ClusterIP
+should support httpNodePort:
+  1: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      annotations: null
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ports:
+        - appProtocol: http
+          name: http
+          nodePort: 8080
+          port: 80
+          protocol: TCP
+          targetPort: http
+        - appProtocol: https
+          name: https
+          port: 443
+          protocol: TCP
+          targetPort: https
+      selector:
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: RELEASE-NAME
+      type: NodePort
+should support httpsNodePort:
+  1: |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      annotations: null
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME
+    spec:
+      ports:
+        - appProtocol: http
+          name: http
+          port: 80
+          protocol: TCP
+          targetPort: http
+        - appProtocol: https
+          name: https
+          nodePort: 8443
+          port: 443
+          protocol: TCP
+          targetPort: https
+      selector:
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/name: RELEASE-NAME
+      type: NodePort

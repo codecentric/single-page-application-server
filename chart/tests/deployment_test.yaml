@@ -1,0 +1,124 @@
+suite: test deployment
+templates:
+  - deployment.yaml
+tests:
+  - it: should fail if image.tag is unset
+    set:
+      pod.container.image.repository: "some-repository"
+    asserts:
+      - failedTemplate:
+          errorMessage: "image.tag is required!"
+  - it: should fail if image.repository is unset
+    set:
+      pod.container.image.tag: "some-tag"
+    asserts:
+      - failedTemplate:
+          errorMessage: "image.repository is required!"
+  - it: should render minimal values
+    values:
+      - ./values/minimal_values.yaml
+    asserts:
+      - matchSnapshot: {}
+  - it: should support enabling https
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      config.default.https.enabled: true
+    asserts:
+      - matchSnapshot: { }
+  - it: should support alternative https port
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      config.default.https:
+        enabled: true
+        port: 8443
+    asserts:
+      - matchSnapshot: { }
+  - it: should support alternative http port
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      config.default.http:
+        port: 8080
+    asserts:
+      - matchSnapshot: { }
+  - it: should render with pull secret
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod.container.image.pullSecrets:
+        - my-pull-secret
+    asserts:
+      - matchSnapshot: { }
+  - it: should render with extra volume
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod:
+        volumes:
+          - name: myvolume
+            secret:
+              secretName: mysecret
+              optional: false
+        container:
+          volumeMounts:
+            - name: myvolume
+              mountPath: "/mnt/foo"
+              readOnly: true
+    asserts:
+      - matchSnapshot: { }
+  - it: should render with nodeSelector
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod:
+        nodeSelector:
+          myNodeLabel: myNodeLabelValue
+    asserts:
+      - matchSnapshot: { }
+  - it: should render with tolerations
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod:
+        tolerations:
+          - key: "example-key"
+            operator: "Exists"
+            effect: "NoSchedule"
+    asserts:
+      - matchSnapshot: { }
+  - it: should render with affinity
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: disktype
+                      operator: In
+                      values:
+                        - ssd
+    asserts:
+      - matchSnapshot: { }
+  - it: should mount tls secret if openshift.route.enabled and openshift.route.tls.termination is reencrypt
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      openshift.route:
+        enabled: true
+        tls:
+          termination: reencrypt
+    asserts:
+      - matchSnapshot: { }
+  - it: should not render replicas if autoscaling is enabled
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod.autoscaling:
+        enabled: true
+    asserts:
+      - matchSnapshot: { }

@@ -1,0 +1,34 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "single-page-application-server.fullname" . | quote}}
+  labels:
+    {{- include "single-page-application-server.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className | required "ingress.className is required!" }}
+  rules:
+    {{- range $hostname, $hostConfig := (.Values.http.hosts | required "http.hosts is required if ingress is enabled!") }}
+    - host: {{ $hostname | quote }}
+      http:
+        paths:
+          - path: {{ $hostConfig.path | default $.Values.config.default.base_href | quote }}
+            pathType: "Prefix"
+            backend:
+              service:
+                name: {{ include "single-page-application-server.fullname" $ | quote}}
+                port:
+                  name: {{ $.Values.ingress.targetServicePortName }}
+    {{- end }}
+  tls: {{- range $hostName, $hostConfig := .Values.http.hosts }}
+    {{- if $hostConfig.tlsSecretName }}
+    - hosts:
+        - {{ $hostName | quote }}
+      secretName: {{ $hostConfig.tlsSecretName }}
+    {{- end }}
+  {{- end }}
+{{- end }}

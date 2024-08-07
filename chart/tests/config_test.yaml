@@ -1,0 +1,9 @@
+suite: test config
+templates:
+  - config.yaml
+tests:
+  - it: should render minimal values
+    values:
+      - ./values/minimal_values.yaml
+    asserts:
+      - matchSnapshot: {}

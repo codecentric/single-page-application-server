@@ -1,0 +1,27 @@
+should render minimal values:
+  1: |
+    apiVersion: v1
+    data:
+      config.yaml: |
+        default:
+          base_href: /
+          http:
+            enabled: true
+            port: 80
+          https:
+            enabled: false
+            port: 443
+            ssl_certificate: /var/run/secrets/tls/tls.crt
+            ssl_certificate_key: /var/run/secrets/tls/tls.key
+          spa_config:
+            endpoints: {}
+    kind: ConfigMap
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-0.0.0
+      name: RELEASE-NAME

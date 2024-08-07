@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "single-page-application-server.fullname" . }}
+  labels:
+    {{- include "single-page-application-server.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.pod.autoscaling.enabled }}
+  replicas: {{ .Values.pod.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "single-page-application-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        "checksum/config-map": {{ $.Values.config | toYaml | sha1sum | quote }}
+      {{- with .Values.pod.annotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "single-page-application-server.labels" . | nindent 8 }}
+        {{- with .Values.pod.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.pod.container.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: false
+      securityContext:
+        {{- toYaml .Values.pod.securityContext | nindent 8 }}
+      containers:
+        - name: single-page-application
+          securityContext:
+            {{- toYaml .Values.pod.container.securityContext | nindent 12 }}
+          image: "{{ .Values.pod.container.image.repository | required "image.repository is required!" }}:{{ .Values.pod.container.image.tag | required "image.tag is required!" }}"
+          imagePullPolicy: {{ .Values.pod.container.image.pullPolicy }}
+          ports:
+            {{- if .Values.config.default.http.enabled }}
+            - name: http
+              containerPort: {{ .Values.config.default.http.port }}
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.config.default.https.enabled }}
+            - name: https
+              containerPort: {{ .Values.config.default.https.port }}
+              protocol: TCP
+            {{- end }}
+          resources:
+            {{- toYaml .Values.pod.container.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.pod.container.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.pod.container.readinessProbe | nindent 12 }}
+
+          volumeMounts:
+            - name: "config"
+              mountPath: "/config/config.yaml"
+              subPath: config.yaml
+              readOnly: true
+            - name: "config-out"
+              mountPath: "/config/.out"
+              readOnly: false
+            - name: "tmp"
+              mountPath: "/tmp"
+              readOnly: false
+          {{- if (and .Values.openshift.route.enabled (eq .Values.openshift.route.tls.termination "reencrypt")) }}
+            - name: "tls"
+              mountPath: /var/run/secrets/tls
+              readOnly: true
+          {{- end }}
+          {{- with .Values.pod.container.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "single-page-application-server.fullname" . }}
+            optional: false
+            defaultMode: 0444
+        - name: config-out
+          emptyDir:
+            medium: {{ .Values.pod.chartVolumes.configOut.medium | quote }}
+            sizeLimit: {{ .Values.pod.chartVolumes.configOut.sizeLimit | quote }}
+        - name: tmp
+          emptyDir:
+            medium: {{ .Values.pod.chartVolumes.tmp.medium | quote }}
+            sizeLimit: {{ .Values.pod.chartVolumes.tmp.sizeLimit | quote }}
+      {{- if (and .Values.openshift.route.enabled (eq .Values.openshift.route.tls.termination "reencrypt")) }}
+        - name: "tls"
+          secret:
+            secretName: "{{ include "single-page-application-server.fullname" . }}-cert"
+            defaultMode: 0444
+            optional: false
+      {{- end }}
+      {{- with .Values.pod.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pod.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pod.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pod.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
