@@ -1,0 +1,81 @@
+should render network-policy with custom egress policy:
+  1: |
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-chart-0.0.0
+      name: RELEASE-NAME
+    spec:
+      egress:
+        - ports:
+            - port: 5978
+              protocol: TCP
+          to:
+            - ipBlock:
+                cidr: 10.0.0.0/24
+      ingress: []
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      policyTypes:
+        - Egress
+should render network-policy with custom ingress policy:
+  1: |
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-chart-0.0.0
+      name: RELEASE-NAME
+    spec:
+      egress: []
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  kubernetes.io/metadata.name: myingresscontroller
+          ports:
+            - port: http
+              protocol: TCP
+            - port: https
+              protocol: TCP
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      policyTypes:
+        - Ingress
+should render network-policy with egress isolation by default:
+  1: |
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-chart-0.0.0
+      name: RELEASE-NAME
+    spec:
+      egress: []
+      ingress: []
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/instance: default
+          app.kubernetes.io/name: RELEASE-NAME
+      policyTypes:
+        - Egress

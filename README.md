@@ -1,11 +1,14 @@
 # Single Page Application Server
+
 ![Update Docker Images](https://github.com/codecentric/single-page-application-server/workflows/Update%20Docker%20Images/badge.svg)
 
-This image can be used as a base image for single page applications. It is itself based on Nginx.
+This container image provides a base for serving Single Page Applications (SPAs), leveraging Nginx as its web server.
+
+For a fitting Helm Chart see [chart/README.md](https://github.com/codecentric/single-page-application-server/blob/master/chart/README.md).
 
 ## Tags
 
-The following tags will be updated automatically with the latest nginx base image on a weekly basis:
+The following tags are updated automatically on a weekly basis with the latest Nginx base image:
 
 * `latest` (alias for `1-nginx-stable-alpine`)
 * `1` (alias for `1-nginx-stable-alpine`)
@@ -14,7 +17,7 @@ The following tags will be updated automatically with the latest nginx base imag
 * `latest-nginx-mainline-alpine` (alias for `1-nginx-mainline-alpine`)
 * `1-nginx-mainline-alpine`
 
-There will also be tags for specific versions.
+Additional tags for specific Nginx versions are also available.
 
 ## Examples
 
@@ -22,46 +25,65 @@ Examples for usage with Angular and React are located in the `examples` director
 
 ## General Features
 
-* Any non-existing routes return the root `index.html`
-  * Does NOT apply to resource routes with filename extensions such as: `js | css | ico | pdf | flv | jpg | jpeg | png | gif | swf`
-* Configure application dynamically at container startup
-* Configure base element
-* Support environment specific configuration depending on the requested host (port and domain)
-* Hashed resources are cached indefinitely by the browser without revalidating
-  * Resource name needs to look like `my-script.3f8a240b.js` or `my-script.3f8a240b.chunk.js`
-    * Hash needs to consist of at least 8 characters
-  * Applies to resources with filename extensions such as: `js | css | ico | pdf | flv | jpg | jpeg | png | gif | swf`
-* HTTP 2 is enabled by default for HTTPS connections
+- **SPA Routes Handling**: Routes not matching static files will serve `index.html`, with exceptions for resources like `.js`, `.css`, etc.
+- **Dynamic Configuration**: Configure applications at container startup.
+- **Environment-Specific Config**: Customize settings based on port and domain.
+- **Resource Caching**: Hashed resources are cached indefinitely. Resources must include a hash of at least 8 characters.
+- **HTTP/2**: Enabled by default for HTTPS connections.
+- **Helm Chart**: A general [Helm chart](https://github.com/codecentric/single-page-application-server/blob/master/chart/README.md) is available for applications using this image.
 
 ## Security Features
 
-* Restrictive Content Security Policy by default
-  * Server API endpoints can be whitelisted automatically
-* Referrer is disabled by default
-* Content Type Sniffing is disabled by default
-* HTTPS is enforced via HSTS by default if enabled
-* HTTPS uses [recommended OWASP protocols and cipher suites](https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html)
-* Container runs as non-root user
-  * Nevertheless the server can still bind to port 80 and 443
-* Serving source map files (*.js.map, *.css.map) is disabled by default 
+- **Content Security Policy**: Restrictive by default, with automatic whitelisting for server API endpoints.
+- **Referrer Policy**: Disabled by default to prevent leakage.
+- **Content Type Sniffing**: Disabled by default.
+- **HTTPS**: Enforced via HSTS if enabled; uses [recommended OWASP protocols and cipher suites.](https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html)
+- **Non-Root User**: The container runs as a non-root user but can bind to ports 80 and 443.
+- **Source Maps**: Disabled by default.
+- **Read-only root filesystem**: [Supported at container runtime](#read-only-root-filesystem-support)
 
 ## Configuration
 
 ### App Directory
 
-Copy your SPA resources to `/app/`. All resources in this directory will be served by the Nginx server.
+Place your SPA resources in `/app/`. All files in this directory will be served by Nginx.
 
 ### YAML Configuration
 
-The application container is configured via YAML files at startup time.
+Configure the application through YAML files at startup:
 
-If you need to configure some default settings for your application image, you can add a default configuration file to `/config/default.yaml`.
+1. **Default Configuration**: Add a default configuration file to `/config/default.yaml`. Usually added during `docker build`.
+2. **Runtime Configuration**: Mount a runtime configuration file at `/config/config.yaml`. This file will override default settings.
 
-To configure settings at runtime, you can mount your runtime configuration file at `/config/config.yaml`. Every specified setting in this file will override the default setting.
+#### Example Configuration
 
-It is also possible to merge multiple configuration files by specifying the `CONFIG_FILES` environment variable like `CONFIG_FILES="file:///config/config1.yaml|file:///config/config2.yaml"`. The configuration options, specified in the first configuration file in that variable, will have priority over the options in later declared files.
+```yaml
+default:
+  spa_config:
+    appTitle: "My Application"
+    endpoints:
+      api: "https://api.example.com"
+```
+
+You can also define host-specific configurations:
+
+```yaml
+default:
+  spa_config:
+    appTitle: "My Default Title"
+    endpoints:
+      api: "https://api.example.com"
+special_host:
+  server_names:
+    - "special.example.com"
+  spa_config:
+    appTitle: "My Domain-specific Title"
+```
+
+#### Configuration Reference
 
 The following configuration shows the default values of this base image for every available setting:
+
 ```yaml
 default:
   # Specifies to which host names this configuration should apply.
@@ -132,40 +154,20 @@ default:
       style-src: "'self'"
 ```
 
-Aside to the `default` configuration block, you can also define other blocks, which might define configuration settings for special hosts. The non-default blocks will inherit the configured settings of the default-block if they are not explicitly redeclared.
-
-Example:
-```yaml
-default:
-  spa_config:
-    appTitle: "My Default Application"
-    endpoints:
-      globalApi: "https://api.example.com"
-special_host:
-  server_names:
-    - "special.example.com"
-  spa_config:
-    appTitle: "My Special Application"
-```
-
-With this configuration the application would have the app title "My Special Application", when it is accessed via the host `special.example.com`, while the endpoints would stay the same in every instance of the application.
-
 ## Read-only Root Filesystem Support
 
-It is recommended to use a read-only root filesystem when running containers. However, the following directories must remain writable when using this base image: 
+For security, use a read-only root filesystem. Ensure the following directories are writable:
 
-* `/config/.out`
-  * This base image generates files in this directory at startup.
-* `/tmp`
-  * Nginx uses this directory to manage cached files and the nginx.pid file. For more information, see [nginxinc/docker-nginx-unprivileged#troubleshooting-tips](https://github.com/nginxinc/docker-nginx-unprivileged/tree/af6e325d35e6833af9cdda8493866b88649e8aaf?tab=readme-ov-file#troubleshooting-tips).
+* `/config/.out`: Used for file generation.
+* `/tmp`: Used by Nginx for cached files and `nginx.pid`.
 
-It is possible to mount these directories as writable volumes. When using Kubernetes, one solution is to mount `emptyDir` volumes at these mount points.
+When using Kubernetes, consider mounting these directories as writable volumes with `emptyDir`.
 
 ## Development
 
-Configuration files are dynamically generated via [gomplate templates](https://docs.gomplate.ca/).
-
-Tests are written in Java using [Testcontainers](https://www.testcontainers.org/).
+* **Configuration Generation**: Uses [gomplate templates](https://docs.gomplate.ca/).
+* **Image Tests**: Written in Java using [Testcontainers](https://www.testcontainers.org/).
+* **Helm Chart Tests**: Uses the [helm-unittest](https://github.com/helm-unittest/helm-unittest) Helm plugin.
 
 ## License
 

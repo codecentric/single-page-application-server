@@ -1,0 +1,44 @@
+suite: test hpa
+templates:
+  - hpa.yaml
+tests:
+  - it: should not render hpa by default
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should render hpa with default values if enabled
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod.autoscaling.enabled: true
+    asserts:
+      - matchSnapshot: { }
+  - it: should render hpa with custom metrics
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod.autoscaling:
+        enabled: true
+        customMetrics:
+          - type: Object
+            object:
+              metric:
+                name: requests-per-second
+              describedObject:
+                apiVersion: networking.k8s.io/v1
+                kind: Ingress
+                name: some-ingress
+              target:
+                type: Value
+                value: 10k
+    asserts:
+      - matchSnapshot: { }
+  - it: should not render cpu metrics if targetCPUUtilizationPercentage is set to 0
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      pod.autoscaling:
+        enabled: true
+        targetCPUUtilizationPercentage: 0
+    asserts:
+      - matchSnapshot: { }

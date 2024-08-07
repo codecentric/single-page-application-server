@@ -1,0 +1,28 @@
+{{- if $.Values.openshift.route.enabled -}}
+{{- range $hostname, $hostConfig := ($.Values.http.hosts | required "http.hosts is required if route is enabled!") }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ include "single-page-application-server.fullname" $ | trunc 22 | trimSuffix "-" }}-{{ sha1sum $hostname }}
+  labels:
+    spa-hostname: "{{- $hostname  -}}"
+    {{- include "single-page-application-server.labels" $ | nindent 4 }}
+  {{- with $.Values.openshift.route.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  host: {{ $hostname }}
+  {{- if $hostConfig.path }}
+  path: {{ $hostConfig.path | quote }}
+  {{- end }}
+  to:
+    kind: Service
+    name: {{ include "single-page-application-server.fullname" $ | quote}}
+  port:
+    targetPort: {{ if (eq $.Values.openshift.route.tls.termination "reencrypt") -}}https{{- else -}}http{{- end}}
+  tls:
+    {{- toYaml $.Values.openshift.route.tls | nindent 4 }}
+{{- end }}
+{{- end }}

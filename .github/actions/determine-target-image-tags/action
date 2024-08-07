@@ -14,8 +14,6 @@ echo "MAJOR_VERSION=${MAJOR_VERSION}"
 test -n "${VERSION}" || ( echo "VERSION is not specified" && false )
 test -n "${MAJOR_VERSION}" || ( echo "MAJOR_VERSION is not specified" && false )
 
-git fetch --tags
-
 GLOBAL_LATEST_VERSION="$(git-semver latest --include-pre-releases)"
 echo "GLOBAL_LATEST_VERSION=${GLOBAL_LATEST_VERSION}"
 

@@ -2,3 +2,4 @@
 /config/.out
 /config_tests/.tmp
 /tests/target
+*.tgz

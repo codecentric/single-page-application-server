@@ -1,0 +1,86 @@
+should not render cpu metrics if targetCPUUtilizationPercentage is set to 0:
+  1: |
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-chart-0.0.0
+      name: RELEASE-NAME
+    spec:
+      maxReplicas: 4
+      metrics: null
+      minReplicas: 1
+      scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: RELEASE-NAME
+should render hpa with custom metrics:
+  1: |
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-chart-0.0.0
+      name: RELEASE-NAME
+    spec:
+      maxReplicas: 4
+      metrics:
+        - resource:
+            name: cpu
+            target:
+              averageUtilization: 50
+              type: Utilization
+          type: Resource
+        - object:
+            describedObject:
+              apiVersion: networking.k8s.io/v1
+              kind: Ingress
+              name: some-ingress
+            metric:
+              name: requests-per-second
+            target:
+              type: Value
+              value: 10k
+          type: Object
+      minReplicas: 1
+      scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: RELEASE-NAME
+should render hpa with default values if enabled:
+  1: |
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      labels:
+        app.kubernetes.io/component: frontend
+        app.kubernetes.io/instance: default
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: RELEASE-NAME
+        app.kubernetes.io/version: latest
+        helm.sh/chart: single-page-application-server-chart-0.0.0
+      name: RELEASE-NAME
+    spec:
+      maxReplicas: 4
+      metrics:
+        - resource:
+            name: cpu
+            target:
+              averageUtilization: 50
+              type: Utilization
+          type: Resource
+      minReplicas: 1
+      scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: RELEASE-NAME

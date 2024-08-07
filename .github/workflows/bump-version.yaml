@@ -9,7 +9,7 @@ jobs:
     name: Bump Version
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: PSanetra/git-semver-actions/next@v1
         id: next_version
       - uses: PSanetra/git-semver-actions/latest@v1

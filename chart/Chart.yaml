@@ -1,0 +1,10 @@
+apiVersion: v2
+name: single-page-application-server-chart
+description: Helm chart for images based on codecentric/single-page-application-server
+type: application
+version: 0.0.0
+maintainers:
+  - name: Philip Sanetra
+    email: code@psanetra.de
+sources:
+  - "https://github.com/codecentric/single-page-application-server"

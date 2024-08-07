@@ -1,0 +1,27 @@
+{{- if .Values.pod.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "single-page-application-server.fullname" . }}
+  labels:
+    {{- include "single-page-application-server.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "single-page-application-server.fullname" . }}
+  minReplicas: {{ .Values.pod.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.pod.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.pod.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.pod.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.pod.autoscaling.customMetrics }}
+    {{- toYaml .Values.pod.autoscaling.customMetrics | nindent 4 }}
+    {{- end }}
+{{- end }}

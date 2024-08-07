@@ -1,0 +1,133 @@
+# Explicit name of the application (not the application instance)
+nameOverride: ""
+# Explicit fully qualified name of the application (not the application instance)
+fullnameOverride: ""
+
+config:
+  default:
+    base_href: "/"
+    spa_config:
+      endpoints: {}
+    http:
+      enabled: true
+      port: 80
+    https:
+      enabled: false
+      port: 443
+      ssl_certificate: /var/run/secrets/tls/tls.crt
+      ssl_certificate_key: /var/run/secrets/tls/tls.key
+
+# These labels are added to all resource types
+labels:
+  "app.kubernetes.io/component": "frontend"
+  # The default value of "app.kubernetes.io/version" is pod.container.image.tag
+  # "app.kubernetes.io/version": ""
+
+pod:
+  labels: { }
+  annotations: { }
+  # Use 2 as replicaCount to avoid downtime during node maintenance, but use little resources as requests
+  replicaCount: 2
+  securityContext:
+    runAsNonRoot: true
+  # Additional volumes on the output Deployment definition.
+  volumes: [ ]
+  # - name: foo
+  #   secret:
+  #     secretName: mysecret
+  #     optional: false
+  chartVolumes:
+    configOut:
+      medium: "Memory"
+      sizeLimit: "256Mi"
+    tmp:
+      medium: "Memory"
+      sizeLimit: "2Gi"
+  container:
+    image:
+      repository:
+      pullPolicy: Always
+      tag:
+      pullSecrets: [ ]
+    securityContext:
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+    livenessProbe:
+      httpGet:
+        path: /health/liveness
+        port: http
+    readinessProbe:
+      httpGet:
+        path: /health/readiness
+        port: http
+    volumeMounts:
+    # - name: foo
+    #   mountPath: "/etc/foo"
+    #   readOnly: true
+    resources:
+      limits:
+        cpu: 2
+        memory: 4Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+  nodeSelector: { }
+  tolerations: [ ]
+  affinity: { }
+  disruptionBudget:
+    enabled: true
+    maxUnavailable: 1
+    minAvailable: 0
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 50
+    customMetrics: []
+
+service:
+  type: ClusterIP
+  httpPort: 80
+  httpNodePort:
+  httpsPort: 443
+  httpsNodePort:
+  annotations: { }
+
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Egress
+  #   - Ingress
+  egress: [ ]
+  ingress: [ ]
+    # - from:
+    #   - ipBlock:
+    #       cidr: "172.17.0.0/32" # ingress-controller or load-balancer ip
+    #   - namespaceSelector:
+    #       matchLabels:
+    #         "kubernetes.io/metadata.name": my-ingress-controller-namespace
+
+http:
+  hosts:
+  #  "chart-example.local":
+  #    path: /
+  #    tlsSecretName: ""
+
+ingress:
+  # Enables Ingress
+  enabled: false
+  className: ""
+  targetServicePortName: http
+  annotations: { }
+
+openshift:
+  route:
+    # Enables OpenShift Route
+    enabled: false
+    annotations: { }
+    tls:
+      termination: reencrypt
+      insecureEdgeTerminationPolicy: Redirect

@@ -1,0 +1,82 @@
+suite: test ingress
+templates:
+  - ingress.yaml
+tests:
+  - it: should not render ingress by default
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should fail to render if enabled but className is not defined
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      ingress:
+        enabled: true
+      http:
+        hosts:
+          "test.example.com": {}
+    asserts:
+      - failedTemplate:
+          errorMessage: "ingress.className is required!"
+  - it: should fail to render if enabled but http.hosts are not defined
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      ingress:
+        enabled: true
+        className: "testingress"
+    asserts:
+      - failedTemplate:
+          errorMessage: "http.hosts is required if ingress is enabled!"
+  - it: should render ingress with default values if enabled
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      ingress:
+        enabled: true
+        className: "testingress"
+      http:
+        hosts:
+          "test.example.com": {}
+    asserts:
+      - matchSnapshot: { }
+  - it: should render ingress with default.base_href if path is not defined
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      config.default.base_href: "/base-path"
+      ingress:
+        enabled: true
+        className: "testingress"
+      http:
+        hosts:
+          "test.example.com": { }
+    asserts:
+      - matchSnapshot: { }
+  - it: should render host with custom path and targetServicePortName
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      ingress:
+        enabled: true
+        className: "testingress"
+      http:
+        hosts:
+          "test.example.com":
+            path: /custom-path
+            targetServicePortName: https
+    asserts:
+      - matchSnapshot: { }
+  - it: should render tls property if http."host".tlsSecretName is set
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      ingress:
+        enabled: true
+        className: "testingress"
+      http:
+        hosts:
+          "test.example.com":
+            tlsSecretName: my-tls-secret
+    asserts:
+      - matchSnapshot: { }

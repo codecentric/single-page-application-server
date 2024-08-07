@@ -1,0 +1,71 @@
+suite: test route
+templates:
+  - route.yaml
+tests:
+  - it: should not render route by default
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should fail to render if enabled but http.hosts are not defined
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      openshift:
+        route:
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "http.hosts is required if route is enabled!"
+  - it: should render route with default values if enabled
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      openshift:
+        route:
+          enabled: true
+      http:
+        hosts:
+          "test.example.com": {}
+    asserts:
+      - matchSnapshot: { }
+  - it: should render targetPort with http if tls.termination is set to edge
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      openshift:
+        route:
+          enabled: true
+          tls:
+            termination: edge
+      http:
+        hosts:
+          "test.example.com": { }
+    asserts:
+      - matchSnapshot: { }
+  - it: should support overriding tls.insecureEdgeTerminationPolicy
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      openshift:
+        route:
+          enabled: true
+          tls:
+            insecureEdgeTerminationPolicy: None
+      http:
+        hosts:
+          "test.example.com": { }
+    asserts:
+      - matchSnapshot: { }
+  - it: should render multiple routes with default values if enabled
+    values:
+      - ./values/minimal_values.yaml
+    set:
+      openshift:
+        route:
+          enabled: true
+      http:
+        hosts:
+          "test1.example.com": { }
+          "test2.example.com": { }
+    asserts:
+      - matchSnapshot: { }
