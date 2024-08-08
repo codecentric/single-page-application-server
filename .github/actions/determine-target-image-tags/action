@@ -43,9 +43,9 @@ if [ "${VERSION}" = "${LATEST_VERSION_BY_MAJOR}" ]; then
   if [ "${VERSION}" = "${GLOBAL_LATEST_VERSION}" ]; then
     TAGS="${TAGS},${DOCKER_REPOSITORY}:${LATEST_IMAGE_TAG}"
 
-    # The "latest" tag should be based on nginx:stable-alpine
+    # The "latest" and MAJOR_VERSION tags should be based on nginx:MAJOR_VERSION-nginx-stable-alpine
     if [ "${MATRIX_NGINX}" = "stable" ]; then
-      TAGS="${TAGS},${DOCKER_REPOSITORY}:latest"
+      TAGS="${TAGS},${DOCKER_REPOSITORY}:${VERSION},${DOCKER_REPOSITORY}:${MAJOR_VERSION},${DOCKER_REPOSITORY}:latest"
     fi
   fi
 fi

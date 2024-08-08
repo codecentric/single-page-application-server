@@ -38,7 +38,7 @@ jobs:
           echo "IMAGE_NAME=${IMAGE_NAME}"
           TAGS="${{ secrets.DOCKER_REPOSITORY }}:${IMAGE_TAG}"
           if [ "latest" = "${{ matrix.spa_server_major_version }}" ] && [ "stable" = "${{ matrix.nginx }}" ]; then
-            TAGS="${TAGS},${{ secrets.DOCKER_REPOSITORY }}:latest"
+            TAGS="${TAGS},${{ secrets.DOCKER_REPOSITORY }}:${{ matrix.spa_server_major_version }},${{ secrets.DOCKER_REPOSITORY }}:latest"
           fi
           echo "::set-output name=tags::${TAGS}"
           echo "TAGS=${TAGS}"

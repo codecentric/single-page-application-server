@@ -7,8 +7,12 @@ This image can be used as a base image for single page applications. It is itsel
 
 The following tags will be updated automatically with the latest nginx base image on a weekly basis:
 
-* `latest`, `latest-nginx-mainline-alpine`, `1-nginx-mainline-alpine`
-* `latest-nginx-stable-alpine`, `1-nginx-stable-alpine`
+* `latest` (alias for `1-nginx-stable-alpine`)
+* `1` (alias for `1-nginx-stable-alpine`)
+* `latest-nginx-stable-alpine` (alias for `1-nginx-stable-alpine`)
+* `1-nginx-stable-alpine`
+* `latest-nginx-mainline-alpine` (alias for `1-nginx-mainline-alpine`)
+* `1-nginx-mainline-alpine`
 
 There will also be tags for specific versions.
 

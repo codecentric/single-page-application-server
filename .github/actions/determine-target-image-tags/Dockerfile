@@ -1,3 +1,3 @@
-FROM psanetra/git-semver:0.4.0
+FROM psanetra/git-semver:1.1.1
 COPY ./action /action
 ENTRYPOINT ["/action"]
