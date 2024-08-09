@@ -19,6 +19,10 @@ RUN rm -r /etc/nginx/conf.d/ && ln -s "${CONFIG_DIR}/.out/conf.d" /etc/nginx/con
 RUN apk --no-cache add libcap && \
     setcap cap_net_bind_service=+ep /usr/sbin/nginx && \
     apk --no-cache del libcap
-USER nginx
+
+# Needs to be set to numeric value to be compatible with Kubernetes PodSecurityContext#runAsNonRoot
+# Setting this to `nginx` and `runAsNonRoot: true` would result in runtime error:
+# "Error: container has runAsNonRoot and image has non-numeric user (nginx), cannot verify user is non-root"
+USER 101:101
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
