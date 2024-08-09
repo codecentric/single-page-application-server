@@ -26,7 +26,7 @@ Examples for usage with Angular and React are located in the `examples` director
 ## General Features
 
 - **SPA Routes Handling**: Routes not matching static files will serve `index.html`, with exceptions for resources like `.js`, `.css`, etc.
-- **Dynamic Configuration**: Configure applications at container startup.
+- **Dynamic Configuration**: Configure your SPA at container startup. The configuration is accessible via `window.spaConfig`.
 - **Environment-Specific Config**: Customize settings based on port and domain.
 - **Resource Caching**: Hashed resources are cached indefinitely. Resources must include a hash of at least 8 characters.
 - **HTTP/2**: Enabled by default for HTTPS connections.
