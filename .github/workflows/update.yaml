@@ -11,6 +11,8 @@ jobs:
   rebase_images:
     name: Update Images
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # needed for signing the images with GitHub OIDC Token
     strategy:
       matrix:
         spa_server_major_version: [ "latest", "1" ]
@@ -81,6 +83,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - uses: docker/build-push-action@v6
         name: Build and push
+        id: build-and-push
         if: ${{ steps.check_if_update_is_necessary.outputs.needs_update == 'true' && steps.target_image_name.outputs.tags != '' }}
         with:
           context: .
@@ -91,3 +94,15 @@ jobs:
           build-args: NGINX_TAG=${{ steps.target_nginx_tag.outputs.tag }}
           provenance: mode=max
           sbom: true
+      - name: Sign the images with GitHub OIDC Token
+        if: ${{ steps.target_tags.outputs.tags != '' }}
+        env:
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          TAGS: ${{ steps.target_image_name.outputs.tags }}
+        run: |
+          images=""
+          for tag in ${TAGS//,/ }; do
+            images+="${tag}@${DIGEST} "
+          done
+          echo '${{ secrets.DOCKER_PASSWORD }}' | cosign login ${{ vars.HELM_REGISTRY }} --username '${{ secrets.DOCKER_USERNAME }}' --password-stdin
+          cosign sign --yes ${images}
