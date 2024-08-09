@@ -29,6 +29,37 @@ jobs:
       - name: Run Helm Unit Tests
         run: helm unittest chart --strict
 
+      - name: Create kind cluster
+        uses: helm/kind-action@v1
+        with:
+          cluster_name: kind
+
+      - uses: docker/build-push-action@v6
+        name: Build current image as base for Angular example
+        with:
+          context: .
+          push: false
+          pull: true
+          tags: "codecentric/single-page-application-server:1-nginx-stable-alpine"
+          build-args: NGINX_TAG=stable-alpine
+
+      - uses: docker/build-push-action@v6
+        name: Build Angular example image
+        with:
+          context: examples/angular
+          push: false
+          pull: false
+          tags: "angular-example:latest"
+
+      - name: Copy image to kind node
+        run: kind load docker-image "angular-example:latest"
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2
+
+      - name: Run chart-testing in kind
+        run: ct install --config chart/ci/ct.yaml
+
       - name: Package Helm Chart
         run: helm package chart -u --version ${{ steps.get_latest_version.outputs.version }} --destination .
 

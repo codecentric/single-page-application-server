@@ -1,0 +1,4 @@
+charts: "chart"
+validate-maintainers: true
+validate-yaml: true
+debug: true

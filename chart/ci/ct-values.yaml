@@ -1,0 +1,6 @@
+pod:
+  container:
+    image:
+      repository: angular-example
+      tag: latest
+      pullPolicy: IfNotPresent
