@@ -40,7 +40,8 @@ Examples for usage with Angular and React are located in the `examples` director
 - **HTTPS**: Enforced via HSTS if enabled; uses [recommended OWASP protocols and cipher suites.](https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html)
 - **Non-Root User**: The container runs as a non-root user but can bind to ports 80 and 443.
 - **Source Maps**: Disabled by default.
-- **Read-only root filesystem**: [Supported at container runtime](#read-only-root-filesystem-support)
+- **Read-only Root Filesystem**: [Supported at container runtime](#read-only-root-filesystem-support)
+- **Supply Chain Verification**: All images are signed using cosign. See [this section for details](#supply-chain-verification).
 
 ## Configuration
 
@@ -162,6 +163,19 @@ For security, use a read-only root filesystem. Ensure the following directories 
 * `/tmp`: Used by Nginx for cached files and `nginx.pid`.
 
 When using Kubernetes, consider mounting these directories as writable volumes with `emptyDir`.
+
+## Supply Chain Verification
+
+Use [cosign](https://docs.sigstore.dev/about/tooling/#cosign) to verify the base image of your Dockerfile when a `codecentric/single-page-application-server` base image was used.
+
+```bash
+cosign dockerfile verify Dockerfile \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  --certificate-identity-regexp '^https\:\/\/github\.com\/codecentric\/single\-page\-application\-server' \
+  --base-image-only
+```
+
+You can try this by checking out this repository and executing this command in the `examples/angular` directory.
 
 ## Development
 
