@@ -2,9 +2,9 @@
 
 ![Update Docker Images](https://github.com/codecentric/single-page-application-server/workflows/Update%20Docker%20Images/badge.svg)
 
-This container image provides a base for serving Single Page Applications (SPAs), leveraging Nginx as its web server.
+This container image provides a base for serving Single Page Applications (SPAs) using Nginx as its web server.
 
-For a fitting Helm Chart see [chart/README.md](https://github.com/codecentric/single-page-application-server/blob/master/chart/README.md).
+For deploying applications using this image, a corresponding Helm chart is available at [Docker Hub](https://hub.docker.com/r/codecentric/single-page-application-server-chart), too.
 
 ## Tags
 
