@@ -95,7 +95,7 @@ jobs:
           provenance: mode=max
           sbom: true
       - name: Sign the images with GitHub OIDC Token
-        if: ${{ steps.target_tags.outputs.tags != '' }}
+        if: ${{ steps.check_if_update_is_necessary.outputs.needs_update == 'true' && steps.target_image_name.outputs.tags != '' }}
         env:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
           TAGS: ${{ steps.target_image_name.outputs.tags }}
