@@ -171,7 +171,7 @@ Use [cosign](https://docs.sigstore.dev/about/tooling/#cosign) to verify the base
 ```bash
 cosign dockerfile verify Dockerfile \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-  --certificate-identity-regexp '^https\:\/\/github\.com\/codecentric\/single\-page\-application\-server' \
+  --certificate-identity-regexp '^https\:\/\/github\.com\/codecentric\/single\-page\-application\-server\/' \
   --base-image-only
 ```
 
