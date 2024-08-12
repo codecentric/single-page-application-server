@@ -37,7 +37,7 @@ Examples for usage with Angular and React are located in the `examples` director
 - **Content Security Policy**: Restrictive by default, with automatic whitelisting for server API endpoints.
 - **Referrer Policy**: Disabled by default to prevent leakage.
 - **Content Type Sniffing**: Disabled by default.
-- **HTTPS**: Enforced via HSTS if enabled; uses [recommended OWASP protocols and cipher suites.](https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html)
+- **HTTPS**: Enforced via HSTS if enabled; uses [recommended OWASP protocols and cipher suites.](https://github.com/OWASP/CheatSheetSeries/blob/1e07c6c894f98af58d8a417eb8df1b20e1b3337e/cheatsheets/TLS_Cipher_String_Cheat_Sheet.md)
 - **Non-Root User**: The container runs as a non-root user but can bind to ports 80 and 443.
 - **Source Maps**: Disabled by default.
 - **Read-only Root Filesystem**: [Supported at container runtime](#read-only-root-filesystem-support)
@@ -128,7 +128,7 @@ default:
     ssl_certificate: /etc/ssl/default.crt
     ssl_certificate_key: /etc/ssl/default.key
     # Configures supported TLS protocols and cipher suites with recommended value
-    # https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html
+    # https://github.com/OWASP/CheatSheetSeries/blob/1e07c6c894f98af58d8a417eb8df1b20e1b3337e/cheatsheets/TLS_Cipher_String_Cheat_Sheet.md
     owasp_cipher_string: A
     http2_enabled: true
   keepalive:

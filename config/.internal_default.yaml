@@ -42,7 +42,7 @@ default:
     ssl_certificate: /etc/ssl/default.crt
     ssl_certificate_key: /etc/ssl/default.key
     # Configures supported TLS protocols and cipher suites with recommended value
-    # https://cheatsheetseries.owasp.org/cheatsheets/TLS_Cipher_String_Cheat_Sheet.html
+    # https://github.com/OWASP/CheatSheetSeries/blob/1e07c6c894f98af58d8a417eb8df1b20e1b3337e/cheatsheets/TLS_Cipher_String_Cheat_Sheet.md
     owasp_cipher_string: A
     http2_enabled: true
   keepalive:
