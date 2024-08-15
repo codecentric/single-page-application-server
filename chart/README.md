@@ -39,9 +39,9 @@ The following table lists the configurable parameters of the Helm chart and thei
 | `config.default.base_href`                             | Base href for the SPA                                                   | `"/"`                            |
 | `config.default.spa_config.endpoints`                  | SPA endpoints configuration                                             | `{}`                             |
 | `config.default.http.enabled`                          | Enable HTTP                                                             | `true`                           |
-| `config.default.http.port`                             | HTTP port                                                               | `80`                             |
+| `config.default.http.port`                             | HTTP port                                                               | `8080`                           |
 | `config.default.https.enabled`                         | Enable HTTPS                                                            | `false`                          |
-| `config.default.https.port`                            | HTTPS port                                                              | `443`                            |
+| `config.default.https.port`                            | HTTPS port                                                              | `8443`                           |
 | `config.default.https.ssl_certificate`                 | Path to SSL certificate                                                 | `/var/run/secrets/tls/tls.crt`   |
 | `config.default.https.ssl_certificate_key`             | Path to SSL certificate key                                             | `/var/run/secrets/tls/tls.key`   |
 | `labels`                                               | Labels added to all resource types                                      | `{"app.kubernetes.io/component": "frontend"}` |
@@ -59,17 +59,19 @@ The following table lists the configurable parameters of the Helm chart and thei
 | `pod.container.image.tag`                              | Container image tag                                                     | `""`                             |
 | `pod.container.image.pullSecrets`                      | Image pull secrets                                                      | `[]`                             |
 | `pod.container.securityContext.capabilities.drop`      | Capabilities to drop                                                    | `["ALL"]`                        |
-| `pod.container.securityContext.readOnlyRootFilesystem` | Use read-only root filesystem                                          | `true`                           |
-| `pod.container.securityContext.runAsNonRoot`           | Run container as non-root                                              | `true`                           |
-| `pod.container.livenessProbe.httpGet.path`             | Path for liveness probe                                                | `/health/liveness`               |
-| `pod.container.livenessProbe.httpGet.port`             | Port for liveness probe                                                | `http`                           |
-| `pod.container.readinessProbe.httpGet.path`            | Path for readiness probe                                               | `/health/readiness`              |
-| `pod.container.readinessProbe.httpGet.port`            | Port for readiness probe                                               | `http`                           |
+| `pod.container.securityContext.capabilities.add`       | Capabilities to add                                                     | `["NET_BIND_SERVICE"]`           |
+| `pod.container.securityContext.readOnlyRootFilesystem` | Use read-only root filesystem                                           | `true`                           |
+| `pod.container.securityContext.allowPrivilegeEscalation`| Allow privilege escalation                                              | `false`                          |
+| `pod.container.securityContext.runAsNonRoot`           | Run container as non-root                                               | `true`                           |
+| `pod.container.livenessProbe.httpGet.path`             | Path for liveness probe                                                 | `/health/liveness`               |
+| `pod.container.livenessProbe.httpGet.port`             | Port for liveness probe                                                 | `http`                           |
+| `pod.container.readinessProbe.httpGet.path`            | Path for readiness probe                                                | `/health/readiness`              |
+| `pod.container.readinessProbe.httpGet.port`            | Port for readiness probe                                                | `http`                           |
 | `pod.container.volumeMounts`                           | Volume mounts for the container                                         | `[]`                             |
 | `pod.container.resources.limits.cpu`                   | CPU limit for the container                                             | `2`                              |
 | `pod.container.resources.limits.memory`                | Memory limit for the container                                          | `4Gi`                            |
 | `pod.container.resources.requests.cpu`                 | CPU request for the container                                           | `100m`                           |
-| `pod.container.resources.requests.memory`              | Memory request for the container                                       | `512Mi`                          |
+| `pod.container.resources.requests.memory`              | Memory request for the container                                        | `512Mi`                          |
 | `pod.nodeSelector`                                     | Node selector for the pod                                               | `{}`                             |
 | `pod.tolerations`                                      | Tolerations for the pod                                                 | `[]`                             |
 | `pod.affinity`                                         | Affinity for the pod                                                    | `{}`                             |
@@ -79,7 +81,7 @@ The following table lists the configurable parameters of the Helm chart and thei
 | `pod.autoscaling.enabled`                              | Enable autoscaling                                                      | `false`                          |
 | `pod.autoscaling.minReplicas`                          | Minimum replicas for autoscaling                                        | `1`                              |
 | `pod.autoscaling.maxReplicas`                          | Maximum replicas for autoscaling                                        | `4`                              |
-| `pod.autoscaling.targetCPUUtilizationPercentage`       | Target CPU utilization percentage for autoscaling                      | `50`                             |
+| `pod.autoscaling.targetCPUUtilizationPercentage`       | Target CPU utilization percentage for autoscaling                       | `50`                             |
 | `pod.autoscaling.customMetrics`                        | Custom metrics for autoscaling                                          | `[]`                             |
 | `service.type`                                         | Type of the service                                                     | `ClusterIP`                      |
 | `service.httpPort`                                     | HTTP port for the service                                               | `80`                             |
@@ -99,7 +101,7 @@ The following table lists the configurable parameters of the Helm chart and thei
 | `openshift.route.enabled`                              | Enable OpenShift Route                                                  | `false`                          |
 | `openshift.route.annotations`                          | Annotations for OpenShift Route                                         | `{}`                             |
 | `openshift.route.tls.termination`                      | TLS termination for OpenShift Route                                     | `reencrypt`                      |
-| `openshift.route.tls.insecureEdgeTerminationPolicy`    | Insecure edge termination policy for OpenShift Route                   | `Redirect`                       |
+| `openshift.route.tls.insecureEdgeTerminationPolicy`    | Insecure edge termination policy for OpenShift Route                    | `Redirect`                       |
 
 ## Usage
 
