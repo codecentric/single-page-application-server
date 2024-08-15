@@ -7,10 +7,10 @@ should render minimal values:
           base_href: /
           http:
             enabled: true
-            port: 80
+            port: 8080
           https:
             enabled: false
-            port: 443
+            port: 8443
             ssl_certificate: /var/run/secrets/tls/tls.crt
             ssl_certificate_key: /var/run/secrets/tls/tls.key
           spa_config:

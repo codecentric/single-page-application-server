@@ -20,7 +20,7 @@ should mount tls secret if openshift.route.enabled and openshift.route.tls.termi
       template:
         metadata:
           annotations:
-            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -39,7 +39,7 @@ should mount tls secret if openshift.route.enabled and openshift.route.tls.termi
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
               readinessProbe:
@@ -54,6 +54,7 @@ should mount tls secret if openshift.route.enabled and openshift.route.tls.termi
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -117,7 +118,7 @@ should not render replicas if autoscaling is enabled:
       template:
         metadata:
           annotations:
-            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -136,7 +137,7 @@ should not render replicas if autoscaling is enabled:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
               readinessProbe:
@@ -151,6 +152,7 @@ should not render replicas if autoscaling is enabled:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -207,7 +209,7 @@ should render minimal values:
       template:
         metadata:
           annotations:
-            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -226,7 +228,7 @@ should render minimal values:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
               readinessProbe:
@@ -241,6 +243,7 @@ should render minimal values:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -297,7 +300,7 @@ should render with affinity:
       template:
         metadata:
           annotations:
-            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -325,7 +328,7 @@ should render with affinity:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
               readinessProbe:
@@ -340,6 +343,7 @@ should render with affinity:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -396,7 +400,7 @@ should render with extra volume:
       template:
         metadata:
           annotations:
-            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -415,7 +419,7 @@ should render with extra volume:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
               readinessProbe:
@@ -430,6 +434,7 @@ should render with extra volume:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -493,7 +498,7 @@ should render with nodeSelector:
       template:
         metadata:
           annotations:
-            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -512,7 +517,7 @@ should render with nodeSelector:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
               readinessProbe:
@@ -527,6 +532,7 @@ should render with nodeSelector:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -585,7 +591,7 @@ should render with pull secret:
       template:
         metadata:
           annotations:
-            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -604,7 +610,7 @@ should render with pull secret:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
               readinessProbe:
@@ -619,6 +625,7 @@ should render with pull secret:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -677,7 +684,7 @@ should render with tolerations:
       template:
         metadata:
           annotations:
-            checksum/config-map: d2cf2f3a678c322f5883feac881f8be66a90c8fd
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -696,7 +703,7 @@ should render with tolerations:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
               readinessProbe:
@@ -711,6 +718,7 @@ should render with tolerations:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -771,7 +779,7 @@ should support alternative http port:
       template:
         metadata:
           annotations:
-            checksum/config-map: a65dc1dcf5388bced1711c8a1233763c4cfb3441
+            checksum/config-map: 43633eff2ae8df4ab6f985258e64f974bb811f35
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -805,6 +813,7 @@ should support alternative http port:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -861,7 +870,7 @@ should support alternative https port:
       template:
         metadata:
           annotations:
-            checksum/config-map: dce4af80cd48a768c53dfab8d2832b9a29701d5e
+            checksum/config-map: d1faa34c3b94b214e37c114b061939cf7d75d9d5
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -880,7 +889,7 @@ should support alternative https port:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
                 - containerPort: 8443
@@ -898,6 +907,7 @@ should support alternative https port:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
@@ -954,7 +964,7 @@ should support enabling https:
       template:
         metadata:
           annotations:
-            checksum/config-map: 321726841793faccc874ccca587d3c1092e28a33
+            checksum/config-map: d1faa34c3b94b214e37c114b061939cf7d75d9d5
           labels:
             app.kubernetes.io/component: frontend
             app.kubernetes.io/instance: default
@@ -973,10 +983,10 @@ should support enabling https:
                   port: http
               name: single-page-application
               ports:
-                - containerPort: 80
+                - containerPort: 8080
                   name: http
                   protocol: TCP
-                - containerPort: 443
+                - containerPort: 8443
                   name: https
                   protocol: TCP
               readinessProbe:
@@ -991,6 +1001,7 @@ should support enabling https:
                   cpu: 100m
                   memory: 512Mi
               securityContext:
+                allowPrivilegeEscalation: false
                 capabilities:
                   add:
                     - NET_BIND_SERVICE
