@@ -46,8 +46,6 @@ jobs:
           nginx-tag: "${{ steps.target_nginx_tag.outputs.tag }}"
           matrix-nginx: "${{ matrix.nginx }}"
           docker-repository: "${{ vars.DOCKER_REPOSITORY }}"
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3
       - uses: docker/setup-qemu-action@v3
         name: Set up QEMU
       - uses: docker/setup-buildx-action@v3
@@ -70,6 +68,8 @@ jobs:
           build-args: NGINX_TAG=${{ steps.target_nginx_tag.outputs.tag }}
           provenance: mode=max
           sbom: true
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
       - name: Sign the images with GitHub OIDC Token
         if: ${{ steps.target_tags.outputs.tags != '' }}
         env:

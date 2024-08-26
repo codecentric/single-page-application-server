@@ -94,6 +94,8 @@ jobs:
           build-args: NGINX_TAG=${{ steps.target_nginx_tag.outputs.tag }}
           provenance: mode=max
           sbom: true
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
       - name: Sign the images with GitHub OIDC Token
         if: ${{ steps.check_if_update_is_necessary.outputs.needs_update == 'true' && steps.target_image_name.outputs.tags != '' }}
         env:
