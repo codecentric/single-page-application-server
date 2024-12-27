@@ -4,6 +4,9 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
 jobs:
   test:
     name: Bump Version
@@ -21,7 +24,7 @@ jobs:
         uses: actions/create-release@v1
         if: ${{ steps.next_version.outputs.version != steps.latest_version.outputs.version }}
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "v${{ steps.next_version.outputs.version }}"
           body: "${{ steps.markdown_log.outputs.changelog }}"
