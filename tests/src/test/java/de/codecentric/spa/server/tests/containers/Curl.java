@@ -13,7 +13,7 @@ public class Curl {
             .withFileFromClasspath("test-ca.pem", "test_pki/ca.pem")
             .withDockerfileFromBuilder(dockerfileBuilder -> dockerfileBuilder
                 .from("alpine")
-                .run("apk --no-cache add curl")
+                .run("apk --no-cache add curl ca-certificates")
                 .copy("test-ca.pem", "/usr/local/share/ca-certificates/")
                 .run("update-ca-certificates")
             )
