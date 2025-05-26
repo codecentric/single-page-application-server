@@ -1,6 +1,7 @@
 # Single Page Application Server
 
 ![Update Docker Images](https://github.com/codecentric/single-page-application-server/workflows/Update%20Docker%20Images/badge.svg)
+![Latest Image Update Job Run Time](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2Fcodecentric%2Fsingle-page-application-server%2Factions%2Fworkflows%2F4033154%2Fruns%3Fstatus%3Dcompleted%26per_page%3D1&query=%24.workflow_runs%5B0%5D.run_started_at&label=Latest%20Image%20Update%20Job%20Run)
 
 This container image provides a base for serving Single Page Applications (SPAs) using Nginx as its web server.
 
