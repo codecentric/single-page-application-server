@@ -19,7 +19,7 @@ jobs:
         # "{0}" will be replaced by the latest pushed nginx version
         nginx: [ "mainline", "stable", "{0}" ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Get latest nginx tag
         id: latest_nginx_tag
         uses: ./.github/actions/latest-docker-repository-version
@@ -60,15 +60,16 @@ jobs:
         run: sudo chmod -R ugo+rwX .
         if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
       - name: Checkout latest SPA-Server version for major version ${{ matrix.spa_server_major_version }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: "v${{ steps.latest_release.outputs.version }}"
         if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
       - run: "./.github/workflows/install-dependencies.sh"
         if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
-      - uses: actions/setup-java@v1
+      - uses: actions/setup-java@v5
         with:
-          java-version: '11'
+          distribution: 'zulu'
+          java-version: '21'
         if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
       - run: "make test NGINX_TAG=\"${{ steps.target_nginx_tag.outputs.tag }}\""
         if: steps.check_if_update_is_necessary.outputs.needs_update == 'true'
