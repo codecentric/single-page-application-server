@@ -6,6 +6,7 @@ on:
   schedule:
     # At 12:00 on Tuesday.
     - cron:  '0 12 * * 2'
+  workflow_dispatch:
 
 jobs:
   rebase_images:
