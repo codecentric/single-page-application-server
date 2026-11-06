@@ -26,7 +26,7 @@ jobs:
         id: latest_nginx_tag
         uses: ./.github/actions/latest-docker-repository-version
         with:
-          repository: "nginxinc/nginx-unprivileged"
+          repository: "nginx/nginx-unprivileged"
       - name: Set target nginx tag
         id: target_nginx_tag
         run: |

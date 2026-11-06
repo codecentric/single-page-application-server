@@ -1,6 +1,6 @@
 ARG NGINX_TAG
 FROM ghcr.io/hairyhenderson/gomplate:stable as gomplate
-FROM nginxinc/nginx-unprivileged:${NGINX_TAG} as single-page-app-server
+FROM nginx/nginx-unprivileged:${NGINX_TAG} as single-page-app-server
 COPY --from=gomplate /gomplate /usr/local/bin/gomplate
 
 ENV APP_ROOT="/app"

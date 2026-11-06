@@ -3,7 +3,7 @@ description: 'Downloads the list of latest tags in a Docker Hub Repository and r
 inputs:
   repository:
     required: true
-    description: 'The target Docker Hub Repository (e.g. "nginxinc/nginx-unprivileged")'
+    description: 'The target Docker Hub Repository (e.g. "nginx/nginx-unprivileged")'
 outputs:
   version:
     description: 'Latest pushed version in the format MAJOR.MINOR.PATCH'
